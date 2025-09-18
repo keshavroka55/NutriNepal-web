@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+  .profile-card {
+    max-width: 700px;
+    margin: 40px auto;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    background: #fff;
+  }
+
+  .profile-header {
+    background: linear-gradient(135deg, #007BFF, #00C6FF);
+    color: #fff;
+    text-align: center;
+    padding: 30px 20px;
+  }
+
+  .profile-header h3 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 1.8rem;
+  }
+
+  .profile-body {
+    padding: 25px 35px;
+  }
+
+  .profile-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 1rem;
+  }
+
+  .profile-row strong {
+    color: #444;
+  }
+
+  .profile-footer {
+    text-align: center;
+    padding: 20px;
+    background: #f9f9f9;
+  }
+
+  .profile-footer .btn {
+    border-radius: 30px;
+    padding: 8px 20px;
+    font-size: 0.95rem;
+    transition: 0.3s ease;
+  }
+
+  .profile-footer .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  }
+</style>
+
+<div class="profile-card">
+  <div class="profile-header">
+    <h3>My Profile</h3>
+  </div>
+  <div class="profile-body">
+    <div class="profile-row"><strong>Name:</strong> {{ user.username }}</div>
+    <div class="profile-row"><strong>Sex:</strong> {{ user.profile.sex }}</div>
+    <div class="profile-row"><strong>Age:</strong> {{ user.profile.age }}</div>
+    <div class="profile-row"><strong>Weight:</strong> {{ user.profile.weight_kg }} kg</div>
+    <div class="profile-row"><strong>Height:</strong> {{ user.profile.height_cm }} cm</div>
+    <div class="profile-row"><strong>Goal:</strong> {{ user.profile.goal }}</div>
+  </div>
+  <div class="profile-footer">
+    <a href="{% url 'dashboard' %}" class="btn btn-outline-primary me-2">Go to Dashboard</a>
+    <a href="{% url 'weight_history' %}" class="btn btn-info">View Weight Reflection</a>
+    <a href="{% url 'profile_edit' %}" class="btn btn-primary">Edit Profile</a>
+  </div>
+</div>
+{% endblock %}

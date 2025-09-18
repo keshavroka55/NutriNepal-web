@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+  .profile-edit-card {
+    max-width: 700px;
+    margin: 40px auto;
+    border-radius: 15px;
+    background: #fff;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+
+  .profile-edit-header {
+    background: linear-gradient(135deg, #28a745, #66bb6a);
+    color: #fff;
+    text-align: center;
+    padding: 25px 20px;
+  }
+
+  .profile-edit-header h2 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+  }
+
+  .profile-edit-body {
+    padding: 30px 40px;
+  }
+
+  .profile-edit-body form p {
+    margin-bottom: 20px;
+  }
+
+  .profile-edit-body label {
+    font-weight: 600;
+    margin-bottom: 5px;
+    display: block;
+    color: #333;
+  }
+
+  .profile-edit-body input, 
+  .profile-edit-body select, 
+  .profile-edit-body textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    transition: 0.3s;
+  }
+
+  .profile-edit-body input:focus, 
+  .profile-edit-body select:focus, 
+  .profile-edit-body textarea:focus {
+    outline: none;
+    border-color: #28a745;
+    box-shadow: 0 0 5px rgba(40,167,69,0.3);
+  }
+
+  .profile-edit-footer {
+    text-align: center;
+    padding: 20px;
+    background: #f9f9f9;
+  }
+
+  .profile-edit-footer .btn {
+    border-radius: 30px;
+    padding: 10px 22px;
+    font-size: 1rem;
+    transition: 0.3s ease;
+    margin: 5px;
+  }
+
+  .profile-edit-footer .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  }
+</style>
+
+<div class="profile-edit-card">
+  <div class="profile-edit-header">
+    <h2>Update Your Profile</h2>
+  </div>
+  <div class="profile-edit-body">
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div class="profile-edit-footer">
+        <button type="submit" class="btn btn-success">💾 Save Profile</button>
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">⬅ Back to Dashboard</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

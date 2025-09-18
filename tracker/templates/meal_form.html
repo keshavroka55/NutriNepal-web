@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="meal-form-container">
+  <div class="header">
+    <h2>
+      {% if form.instance.pk %}
+        ✏ Edit Meal
+      {% else %}
+        🍽 Add Today’s Eaten Foods
+      {% endif %}
+    </h2>
+    <p class="subtitle">Fill in the details to keep your meal log up to date.</p>
+  </div>
+
+  <form method="post" class="styled-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn primary">💾 Save Meal</button>
+  </form>
+
+  <div class="actions">
+    <a href="{% url 'food_list' %}" class="btn secondary">⬅ Back to Meals</a>
+  </div>
+</div>
+
+<!-- CSS -->
+<style>
+.meal-form-container {
+    max-width: 650px;
+    margin: 40px auto;
+    padding: 25px;
+    background: #f8f9fa;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    font-family: "Segoe UI", sans-serif;
+}
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.header h2 {
+    font-size: 26px;
+    margin: 0;
+}
+.subtitle {
+    font-size: 14px;
+    color: #666;
+}
+.styled-form p {
+    margin-bottom: 15px;
+}
+.styled-form label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #444;
+}
+.styled-form input,
+.styled-form select,
+.styled-form textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border 0.3s, box-shadow 0.3s;
+}
+.styled-form input:focus,
+.styled-form select:focus,
+.styled-form textarea:focus {
+    border-color: #36A2EB;
+    box-shadow: 0 0 5px rgba(54,162,235,0.4);
+    outline: none;
+}
+.btn {
+    text-decoration: none;
+    display: inline-block;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: 0.3s;
+    cursor: pointer;
+}
+.btn.primary {
+    background: #36A2EB;
+    color: white;
+    border: none;
+}
+.btn.primary:hover {
+    background: #1f77d0;
+}
+.btn.secondary {
+    background: #eee;
+    color: #333;
+}
+.btn.secondary:hover {
+    background: #ddd;
+}
+.actions {
+    margin-top: 20px;
+    text-align: center;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,237 @@
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.utils import timezone
+from django.db.models import Sum, F, FloatField
+from datetime import date
+
+from .models import Profile, Food, MealEntry
+from .forms import  FoodForm, MealForm,MealEntryForm
+# for the weights
+from django.urls import reverse
+from .forms import WeightUpdateForm
+from .models import WeightEntry
+from .models import Profile
+import json
+
+
+
+def home(request):
+    return render(request,'test.html')
+
+@login_required
+def dashboard(request):
+    print("Current user:", request.user)
+    today = request.GET.get('date') or timezone.localdate()
+    entries = MealEntry.objects.filter(user=request.user, date=today)
+
+    totals = entries.aggregate(
+        kcal=Sum('food__kcal', distinct=False),  # not correct with servings directly
+        protein_g=Sum('food__protein_g'),
+        fat_g=Sum('food__fat_g'),
+        carbs_g=Sum('food__carbs_g'),
+    )
+    # Compute with servings manually
+    total_kcal = sum(e.kcal for e in entries)
+    total_protein = sum(e.protein_g for e in entries)
+    total_fat = sum(e.fat_g for e in entries)
+    total_carbs = sum(e.carbs_g for e in entries)
+
+    profile = get_object_or_404(Profile, user=request.user)
+    target = profile.daily_target_kcal()
+    remaining = max(0, target - total_kcal)
+
+    context = {
+        'date': today,
+        'entries': entries.order_by('-id'),
+        'total_kcal': round(total_kcal, 1),
+        'total_protein': round(total_protein, 1),
+        'total_fat': round(total_fat, 1),
+        'total_carbs': round(total_carbs, 1),
+        'target_kcal': round(target, 0),
+        'remaining_kcal': round(remaining, 0),
+    }
+    return render(request, 'dashboard.html', context)
+
+
+
+@login_required
+def foods_list(request):
+    foods = Food.objects.all().order_by('name')
+    return render(request, 'foods_list.html', {'foods': foods})
+
+
+@login_required
+def food_create(request):
+    if request.method == 'POST':
+        form = FoodForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Food added!')
+            return redirect('foods_list')
+    else:
+        form = FoodForm()
+    return render(request, 'food_form.html', {'form': form, 'title': 'Add Food'})
+
+@login_required
+def show_food_list(request):
+    return render(request,'foods_list.html')
+
+
+@login_required
+def food_update(request, pk):
+    food = get_object_or_404(Food, pk=pk)
+    if request.method == 'POST':
+        form = FoodForm(request.POST, instance=food)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Food updated!')
+            return redirect('foods_list')
+    else:
+        form = FoodForm(instance=food)
+    return render(request, 'food_form.html', {'form': form, 'title': 'Edit Food'})
+
+
+@login_required
+def meals_list(request):
+    meals_qs = MealEntry.objects.filter(user=request.user).order_by('-date', '-id')
+    seen_foods = set()
+    meals = []
+    for meal in meals_qs:
+        if meal.food.id not in seen_foods:
+            meals.append(meal)
+            seen_foods.add(meal.food.id)
+    return render(request, 'meals_list.html', {'meals': meals})
+
+
+
+@login_required
+def meal_create(request):
+    if request.method == 'POST':
+        form = MealForm(request.POST)
+        if form.is_valid():
+            meal = form.save(commit=False)
+            meal.user = request.user
+            meal.save()
+            messages.success(request, 'Meal added!')
+            return redirect('dashboard')
+    else:
+        form = MealForm()
+    return render(request, 'meal_form.html', {'form': form, 'title': 'Add Meal'})
+
+
+@login_required
+def meal_delete(request, pk):
+    meal = get_object_or_404(MealEntry, pk=pk, user=request.user)
+    if request.method == 'POST':
+        meal.delete()
+        messages.success(request, 'Meal removed.')
+        return redirect('food_list')
+    return render(request, 'meal_confirm_delete.html', {'form': None, 'delete_obj': meal, 'title': 'Delete Meal'})
+
+@login_required
+def meal_edit(request, meal_id):
+    meal = get_object_or_404(MealEntry, id=meal_id, user=request.user)  # only the owner can edit
+
+    if request.method == "POST":
+        form = MealEntryForm(request.POST, instance=meal)
+        if form.is_valid():
+            form.save()
+            return redirect('meals_list')  # after editing, go back to list
+    else:
+        form = MealEntryForm(instance=meal)
+
+    return render(request, "meal_edit.html", {"form": form, "meal": meal})
+
+
+# for daily Kcal intake
+
+@login_required
+def daily_kcal_summary(request):
+    """
+    Returns a list of days (date) with total kcal, protein, fat, carbs for the logged-in user.
+    """
+    daily_kcal = (
+        MealEntry.objects.filter(user=request.user)
+        .values('date')
+        .annotate(
+            total_kcal=Sum(F('food__kcal') * F('servings'), output_field=FloatField()),
+            total_protein=Sum(F('food__protein_g') * F('servings'), output_field=FloatField()),
+            total_fat=Sum(F('food__fat_g') * F('servings'), output_field=FloatField()),
+            total_carbs=Sum(F('food__carbs_g') * F('servings'), output_field=FloatField()),
+        )
+        .order_by('-date')  # newest first
+    )
+    return render(request, 'history/daily_kcal_summary.html', {'daily_kcal': daily_kcal})
+
+@login_required
+def daily_kcal_detail(request, year, month, day):
+    """
+    Shows the meal entries for a specific date and a per-day total.
+    URL will pass year/month/day to identify the date.
+    """
+    the_date = date(year=int(year), month=int(month), day=int(day))
+    entries = MealEntry.objects.filter(user=request.user, date=the_date).select_related('food').order_by('id')
+
+    totals = entries.aggregate(
+        total_kcal=Sum(F('food__kcal') * F('servings'), output_field=FloatField()),
+        total_protein=Sum(F('food__protein_g') * F('servings'), output_field=FloatField()),
+        total_fat=Sum(F('food__fat_g') * F('servings'), output_field=FloatField()),
+        total_carbs=Sum(F('food__carbs_g') * F('servings'), output_field=FloatField()),
+    )
+
+    # ensure zeros instead of None
+    for k in ['total_kcal', 'total_protein', 'total_fat', 'total_carbs']:
+        totals[k] = totals.get(k) or 0.0
+
+    return render(request, 'history/daily_kcal_detail.html', {
+        'date': the_date,
+        'entries': entries,
+        'totals': totals,
+    })
+
+
+
+@login_required
+def update_weight(request):
+    # ensure profile exists
+    profile, _ = Profile.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        form = WeightUpdateForm(request.POST)
+        if form.is_valid():
+            w = form.cleaned_data['weight_kg']
+
+            # Save a new history entry
+            WeightEntry.objects.create(user=request.user, weight_kg=w, recorded_at=timezone.now())
+
+            # Update user's profile current weight
+            profile.weight_kg = w
+            profile.save()
+
+            return redirect('weight_history')
+    else:
+        # prefill with current profile weight
+        initial = {'weight_kg': profile.weight_kg or 0.0}
+        form = WeightUpdateForm(initial=initial)
+
+    return render(request, 'history/update_weight.html', {'form': form, 'profile': profile})
+
+@login_required
+def weight_history(request):
+    # fetch history entries for this user (limit to 100 for performance)
+    entries = WeightEntry.objects.filter(user=request.user).order_by('-recorded_at')  # oldest -> newest for chart
+
+    # Build lists for chart labels and data (dates and weights)
+    labels = [e.recorded_at.date().isoformat() for e in entries]  # 'YYYY-MM-DD'
+    data = [round(e.weight_kg, 2) for e in entries]
+
+    # You can optionally limit to last N days:
+    # entries = entries.reverse()[:30]  # last 30 entries then reverse again etc.
+
+    return render(request, 'history/weight_history.html', {
+        'entries': entries,
+        'labels_json': json.dumps(labels),
+        'data_json': json.dumps(data),
+        'current_weight': getattr(request.user, 'profile', None).weight_kg if hasattr(request.user, 'profile') else None,
+    })

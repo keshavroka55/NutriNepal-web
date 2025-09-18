@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="meals-container">
+  <div class="header">
+    <h2>🍽 My Meals</h2>
+    <a href="{% url 'meal_create' %}" class="btn primary">➕ Add Eated Meal</a>
+  </div>
+
+  <div class="meal-list">
+    {% for meal in meals %}
+      <div class="meal-card">
+        <div class="meal-info">
+          <h4>{{ meal.food.name }}</h4>
+          <p class="meal-date">{{ meal.date }}</p>
+        </div>
+        <div class="meal-actions">
+          <a href="{% url 'meal_edit' meal.id %}" class="btn small edit">✏ Edit</a>
+          <a href="{% url 'meal_delete' meal.id %}" class="btn small delete">🗑 Delete</a>
+        </div>
+      </div>
+    {% empty %}
+      <p class="empty-msg">No meals yet. Add one!</p>
+    {% endfor %}
+  </div>
+
+  <div class="back-link">
+    <a href="{% url 'dashboard' %}" class="btn secondary">⬅ Back to Dashboard</a>
+  </div>
+</div>
+
+<!-- CSS -->
+<style>
+.meals-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    font-family: "Segoe UI", sans-serif;
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+.header h2 {
+    margin: 0;
+    font-size: 26px;
+}
+.meal-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.meal-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f9fa;
+    padding: 15px 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+.meal-info h4 {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+}
+.meal-date {
+    font-size: 13px;
+    color: #777;
+    margin-top: 3px;
+}
+.meal-actions {
+    display: flex;
+    gap: 10px;
+}
+.btn {
+    text-decoration: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+.btn.primary {
+    background: #36A2EB;
+    color: #fff;
+}
+.btn.primary:hover {
+    background: #1f77d0;
+}
+.btn.secondary {
+    background: #eee;
+    color: #333;
+}
+.btn.secondary:hover {
+    background: #ddd;
+}
+.btn.small {
+    font-size: 13px;
+    padding: 6px 10px;
+}
+.btn.edit {
+    background: #ffc107;
+    color: #333;
+}
+.btn.edit:hover {
+    background: #e0a800;
+}
+.btn.delete {
+    background: #dc3545;
+    color: #fff;
+}
+.btn.delete:hover {
+    background: #a71d2a;
+}
+.empty-msg {
+    text-align: center;
+    color: #777;
+    margin-top: 20px;
+}
+.back-link {
+    margin-top: 25px;
+    text-align: center;
+}
+</style>
+{% endblock %}

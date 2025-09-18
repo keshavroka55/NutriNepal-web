@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Total Database Foods List!</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Food</th>
+            <th>Calories</th>
+            <th>Protein</th>
+            <th>Fat</th>
+            <th>Carbs</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for food in foods %}
+        <tr>
+            <td>{{ food.name }}</td>
+            <td>{{ food.kcal }}</td>
+            <td>{{ food.protein_g }}</td>
+            <td>{{ food.fat_g }}</td>
+            <td>{{ food.carbs_g }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5">No foods added yet.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

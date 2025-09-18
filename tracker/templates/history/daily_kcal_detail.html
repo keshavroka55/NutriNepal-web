@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Meals for {{ date }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+  <!-- Page Heading -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0 text-primary">Meals for {{ date }}</h2>
+    <a class="btn btn-sm btn-outline-secondary" href="{% url 'daily_kcal_summary' %}">
+      &larr; Back to summary
+    </a>
+  </div>
+
+  <!-- Totals Card -->
+  <div class="row my-4">
+    <div class="col-md-6">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-light fw-bold">Daily Totals</div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item d-flex justify-content-between">
+            <span>Total kcal</span>
+            <strong>{{ totals.total_kcal|floatformat:1 }}</strong>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span>Protein (g)</span>
+            <strong>{{ totals.total_protein|floatformat:1 }}</strong>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span>Fat (g)</span>
+            <strong>{{ totals.total_fat|floatformat:1 }}</strong>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span>Carbs (g)</span>
+            <strong>{{ totals.total_carbs|floatformat:1 }}</strong>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Entries Table -->
+  <h4 class="mt-4">Food Entries</h4>
+  {% if entries %}
+    <div class="table-responsive shadow-sm rounded">
+      <table class="table table-sm table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Food</th>
+            <th class="text-end">Servings</th>
+            <th class="text-end">Kcal/serv</th>
+            <th class="text-end">Kcal (entry)</th>
+            <th class="text-end">Protein (g)</th>
+            <th class="text-end">Fat (g)</th>
+            <th class="text-end">Carbs (g)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for e in entries %}
+            <tr>
+              <td>{{ e.food.name }}</td>
+              <td class="text-end">{{ e.servings|floatformat:2 }}</td>
+              <td class="text-end">{{ e.food.kcal|floatformat:1 }}</td>
+              <td class="text-end fw-semibold">{{ e.kcal|floatformat:1 }}</td>
+              <td class="text-end text-success">{{ e.protein_g|floatformat:1 }}</td>
+              <td class="text-end text-danger">{{ e.fat_g|floatformat:1 }}</td>
+              <td class="text-end text-info">{{ e.carbs_g|floatformat:1 }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="alert alert-warning mt-3">
+      No entries for this date.
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="header">
+        <h2>📊 Dashboard — {{ date }}</h2>
+        <p class="subtitle">Track your daily nutrition & calories</p>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="cards">
+        <div class="card">
+            <h4>Daily Goal</h4>
+            <p>{{ target_kcal }} kcal</p>
+        </div>
+        <div class="card">
+            <h4>Total Eaten</h4>
+            <p>{{ total_kcal }} kcal</p>
+        </div>
+        <div class="card">
+            <h4>Remaining</h4>
+            <p>{{ remaining_kcal }} kcal</p>
+        </div>
+    </div>
+
+    <!-- Macro Breakdown -->
+    <div class="chart-section">
+        <h3>Macronutrient Breakdown</h3>
+        <canvas id="macroChart"></canvas>
+        <div class="macro-values">
+            <p><strong>Protein:</strong> {{ total_protein }} g</p>
+            <p><strong>Fat:</strong> {{ total_fat }} g</p>
+            <p><strong>Carbs:</strong> {{ total_carbs }} g</p>
+        </div>
+    </div>
+
+    <!-- Meal Entries -->
+    <div class="entries-section">
+        <h3>🍽 Today’s Meals</h3>
+        {% if entries %}
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Food</th>
+                    <th>Calories (kcal)</th>
+                    <th>Protein (g)</th>
+                    <th>Fat (g)</th>
+                    <th>Carbs (g)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in entries %}
+                <tr>
+                    <td>{{ entry.food.name }}</td>
+                    <td>{{ entry.kcal }}</td>
+                    <td>{{ entry.protein_g }}</td>
+                    <td>{{ entry.fat_g }}</td>
+                    <td>{{ entry.carbs_g }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="empty-msg">No meals added for today yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- Buttons -->
+    <div class="actions">
+        <a href="{% url 'meal_create' %}" class="btn primary">➕ Add Today Eaten Food</a>
+        <a href="{% url 'add_food' %}" class="btn primary">➕ Create Your Favourite Food</a>
+        <a href="{% url 'food_list' %}" class="btn secondary">📚 Update Foods</a>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('macroChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Protein (g)', 'Fat (g)', 'Carbs (g)'],
+            datasets: [{
+                data: [{{ total_protein }}, {{ total_fat }}, {{ total_carbs }}],
+                backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56'],
+                hoverOffset: 12
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { font: { size: 14 } }
+                }
+            }
+        }
+    });
+</script>
+
+<!-- CSS -->
+<style>
+.dashboard-container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+    font-family: "Segoe UI", sans-serif;
+}
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.header h2 {
+    font-size: 28px;
+    margin: 0;
+}
+.subtitle {
+    color: #666;
+}
+.cards {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 30px;
+    gap: 20px;
+}
+.card {
+    flex: 1;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.card h4 {
+    margin-bottom: 8px;
+    color: #444;
+}
+.chart-section {
+    text-align: center;
+    margin-bottom: 40px;
+}
+#macroChart {
+    max-width: 400px;
+    margin: 20px auto;
+}
+.entries-section {
+    margin-bottom: 30px;
+}
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.styled-table th, .styled-table td {
+    padding: 12px;
+    text-align: center;
+}
+.styled-table thead {
+    background-color: #36A2EB;
+    color: white;
+}
+.styled-table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+.empty-msg {
+    text-align: center;
+    color: #777;
+}
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+.btn {
+    text-decoration: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+.btn.primary {
+    background: #36A2EB;
+    color: white;
+}
+.btn.primary:hover {
+    background: #1f77d0;
+}
+.btn.secondary {
+    background: #eee;
+    color: #333;
+}
+.btn.secondary:hover {
+    background: #ddd;
+}
+</style>
+{% endblock %}

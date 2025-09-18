@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Weight History{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <h1>Weight History</h1>
+
+  <p>
+    <a class="btn btn-sm btn-outline-secondary" href="{% url 'update_weight' %}">Add / Update Weight</a>
+  </p>
+
+  <div class="row">
+    <div class="col-md-8">
+      <canvas id="weightChart" width="600" height="300"></canvas>
+    </div>
+
+    <div class="col-md-4">
+      <h5>Current weight</h5>
+      <p><strong>{{ current_weight|default:"—" }} kg</strong></p>
+
+      <h5>Recent entries</h5>
+      <table class="table table-sm">
+        <thead>
+          <tr><th>Date</th><th class="text-end">Weight (kg)</th></tr>
+        </thead>
+        <tbody>
+          {% for e in entries|slice:":20" %} {# show latest 20 #}
+            <tr>
+              <td>{{ e.recorded_at.date }}</td>
+              <td class="text-end">{{ e.weight_kg|floatformat:1 }}</td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="2">No entries yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  // get data passed from view
+  const labels = {{ labels_json|safe }};
+  const data = {{ data_json|safe }};
+
+  const ctx = document.getElementById('weightChart').getContext('2d');
+
+  // if no data, show a placeholder message
+  if (!labels.length) {
+    ctx.font = '16px Arial';
+    ctx.fillText('No weight entries yet. Use "Add / Update Weight".', 10, 50);
+  } else {
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Weight (kg)',
+          data: data,
+          fill: false,
+          tension: 0.2,
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: { display: true, title: { display: true, text: 'Date' } },
+          y: { display: true, title: { display: true, text: 'kg' } }
+        }
+      }
+    });
+  }
+</script>
+{% endblock %}

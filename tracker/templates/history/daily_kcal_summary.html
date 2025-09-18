@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Daily Kcal Summary{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <h1 class="mb-3">Daily Kcal Summary</h1>
+
+  <p><a class="btn btn-sm btn-secondary" href="{% url 'daily_kcal_summary' %}">Refresh</a></p>
+
+  {% if daily_kcal %}
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered">
+        <thead class="thead-light">
+          <tr>
+            <th>Date</th>
+            <th class="text-end">Total kcal</th>
+            <th class="text-end">Protein (g)</th>
+            <th class="text-end">Fat (g)</th>
+            <th class="text-end">Carbs (g)</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in daily_kcal %}
+            <tr>
+              <td>{{ row.date }}</td>
+              <td class="text-end">{{ row.total_kcal|default_if_none:"0.0"|floatformat:1 }}</td>
+              <td class="text-end">{{ row.total_protein|default_if_none:"0.0"|floatformat:1 }}</td>
+              <td class="text-end">{{ row.total_fat|default_if_none:"0.0"|floatformat:1 }}</td>
+              <td class="text-end">{{ row.total_carbs|default_if_none:"0.0"|floatformat:1 }}</td>
+              <td>
+                <a class="btn btn-sm btn-primary"
+                   href="{% url 'daily_kcal_detail' row.date.year row.date.month row.date.day %}">
+                  View
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="alert alert-info">No meal entries yet.</div>
+  {% endif %}
+</div>
+{% endblock %}

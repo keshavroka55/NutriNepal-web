@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% block title %}Update Weight{% endblock %}
+
+{% block content %}
+<div class="container py-5 d-flex justify-content-center">
+  <div class="card shadow-sm p-4 w-100" style="max-width: 500px; border-radius: 12px;">
+    
+    <h2 class="mb-3 text-center text-primary">Update Weight</h2>
+    <hr class="mb-4">
+
+    {% if profile %}
+      <div class="alert alert-info text-center mb-4">
+        Current saved weight: <strong>{{ profile.weight_kg }} kg</strong>
+      </div>
+    {% endif %}
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label fw-semibold">{{ form.weight_kg.label }}</label>
+        {{ form.weight_kg|add_class:"form-control" }}
+        {% if form.weight_kg.errors %}
+          <div class="text-danger small mt-1">{{ form.weight_kg.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mt-4">
+        <button class="btn btn-primary px-4" type="submit">💾 Save</button>
+        <a class="btn btn-outline-secondary px-4" href="{% url 'weight_history' %}">📊 History</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
