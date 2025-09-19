@@ -121,7 +121,7 @@
                     </div>
                     <div>
                       <div><strong>Welcome —</strong> please sign in to save your progress and access your dashboard.</div>
-                      <div class="small-muted mt-1">You will be redirected in <span id="countdown">5</span> seconds.</div>
+                      {% comment %} <div class="small-muted mt-1">You will be redirected in <span id="countdown">5</span> seconds.</div> {% endcomment %}
                       <div class="mt-3">
                         <a href="{% url 'login' %}" class="btn btn-success btn-sm me-2">Login</a>
                         <a href="{% url 'register' %}" class="btn btn-outline-success btn-sm">Sign up</a>
