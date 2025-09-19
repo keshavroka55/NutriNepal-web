@@ -17,7 +17,7 @@ import json
 
 
 def home(request):
-    return render(request,'test.html')
+    return render(request,'homepage.html')
 
 @login_required
 def dashboard(request):
@@ -40,6 +40,8 @@ def dashboard(request):
     profile = get_object_or_404(Profile, user=request.user)
     target = profile.daily_target_kcal()
     remaining = max(0, target - total_kcal)
+    # total_kcal = profile.total_kcal()
+
 
     context = {
         'date': today,

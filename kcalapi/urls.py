@@ -21,6 +21,7 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home,name='homepage'),
+
     path('tracker/', include('tracker.urls')),
     path('authsys/', include('authsys.urls')),
     # for google login auth

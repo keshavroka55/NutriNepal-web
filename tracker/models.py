@@ -77,7 +77,7 @@ class MealEntry(models.Model):
         return self.food.carbs_g * self.servings
 
     def __str__(self):
-        return f"{self.user.username} - {self.food.name} x {self.servings}"
+        return f"{self.user.username} - {self.food.name} x {self.servings} - {self.kcal}"
     
 
 # for weight histroy
