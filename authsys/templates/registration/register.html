@@ -188,14 +188,6 @@
             </div>
 
             <div class="field-wrapper">
-                <label for="{{ form.email.id_for_label }}">Email</label>
-                {{ form.email }}
-                {% if form.email.errors %}
-                    <ul class="errorlist" aria-live="polite">{{ form.email.errors }}</ul>
-                {% endif %}
-            </div>
-
-            <div class="field-wrapper">
                 <label for="{{ form.password1.id_for_label }}">Password</label>
                 {{ form.password1 }}
                 {% if form.password1.errors %}
