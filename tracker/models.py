@@ -14,6 +14,7 @@ class Profile(models.Model):
     )
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    name = models.TextField()
     age = models.PositiveIntegerField(default=20)
     sex = models.CharField(max_length=1, choices=SEX_CHOICES, default='M')
     height_cm = models.FloatField(default=170)
@@ -49,9 +50,15 @@ class Food(models.Model):
     protein_g = models.FloatField(default=0)
     fat_g = models.FloatField(default=0)
     carbs_g = models.FloatField(default=0)
+    # only super user can control or CURD foods_list in the system. Normal user can only control over the foods that they created and only show in their account. 
+    creator = models.ForeignKey(User,null=True,blank=True,on_delete=models.SET_NULL,related_name='foods')
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
 
     def __str__(self):
-        return f"{self.name} ({self.serving_size_g}g)"
+          creator = self.creator.username if self.creator else "system"
+          return f"{self.name} ({self.serving_size_g}g) — {creator}"
 
 
 class MealEntry(models.Model):

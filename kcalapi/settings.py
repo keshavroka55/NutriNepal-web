@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'tracker',
     'authsys',
+    'searchF',
     # for google auth.
     'social_django',
     'django.contrib.sites',
@@ -102,6 +103,8 @@ TEMPLATES = [
             BASE_DIR / "kcalapi"/ "templates",
             BASE_DIR / "tracker"/ "templates",
             BASE_DIR / "authsys"/ "templates",
+            BASE_DIR / "searchF"/ "templates",
+
 
 
         ],
@@ -165,7 +168,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
+
 STATIC_URL = 'static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 
 STATICFILES_DIRS = [
     os.path.join (BASE_DIR,'kcalapi','static'),

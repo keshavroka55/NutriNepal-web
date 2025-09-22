@@ -14,6 +14,9 @@ from .models import WeightEntry
 from .models import Profile
 import json
 
+from django.http import HttpResponseForbidden
+from django.db.models import Q
+
 
 
 def home(request):
@@ -57,32 +60,45 @@ def dashboard(request):
 
 
 
+# @login_required
+# def foods_list(request):
+#     foods = Food.objects.all().order_by('name')
+#     return render(request, 'foods_list.html', {'foods': foods})
+
 @login_required
 def foods_list(request):
-    foods = Food.objects.all().order_by('name')
-    return render(request, 'foods_list.html', {'foods': foods})
-
+    """
+    - Foods created by superusers: visible to everyone.
+    - Foods created by normal users: visible only to the creator.
+    """
+    if request.user.is_superuser:
+        foods = Food.objects.filter(Q(creator__is_superuser=True)).order_by('-created_at')
+    else:
+        foods = Food.objects.filter(Q(creator__is_superuser=True) | Q(creator=request.user)).order_by('-created_at')
+    return render(request, 'FoodCURD/foods_list.html', {'foods': foods})
 
 @login_required
 def food_create(request):
     if request.method == 'POST':
         form = FoodForm(request.POST)
         if form.is_valid():
-            form.save()
+            food = form.save(commit=False)
+            food.creator = request.user
+            food.save()
             messages.success(request, 'Food added!')
             return redirect('foods_list')
     else:
         form = FoodForm()
-    return render(request, 'food_form.html', {'form': form, 'title': 'Add Food'})
-
-@login_required
-def show_food_list(request):
-    return render(request,'foods_list.html')
-
+    return render(request, 'FoodCURD/food_form.html', {'form': form, 'title': 'Add Food'})
 
 @login_required
 def food_update(request, pk):
     food = get_object_or_404(Food, pk=pk)
+    # authorization: only superuser or owner can edit
+    if not (request.user.is_superuser or food.creator == request.user):
+        messages.error(request, "You don't have permission to edit this food.")
+        return HttpResponseForbidden("Forbidden")
+
     if request.method == 'POST':
         form = FoodForm(request.POST, instance=food)
         if form.is_valid():
@@ -91,19 +107,36 @@ def food_update(request, pk):
             return redirect('foods_list')
     else:
         form = FoodForm(instance=food)
-    return render(request, 'food_form.html', {'form': form, 'title': 'Edit Food'})
-
+    return render(request, 'FoodCURD/food_form.html', {'form': form, 'title': 'Edit Food'})
 
 @login_required
-def meals_list(request):
-    meals_qs = MealEntry.objects.filter(user=request.user).order_by('-date', '-id')
-    seen_foods = set()
-    meals = []
-    for meal in meals_qs:
-        if meal.food.id not in seen_foods:
-            meals.append(meal)
-            seen_foods.add(meal.food.id)
-    return render(request, 'meals_list.html', {'meals': meals})
+def food_delete(request, pk):
+    food = get_object_or_404(Food, pk=pk)
+    # authorization: only superuser or owner can delete
+    if not (request.user.is_superuser or food.creator == request.user):
+        messages.error(request, "You don't have permission to delete this food.")
+        return HttpResponseForbidden("Forbidden")
+
+    if request.method == 'POST':
+        food.delete()
+        messages.success(request, 'Food deleted!')
+        return redirect('foods_list')
+
+    # GET -> show confirmation
+    return render(request, 'FoodCURD/food_confirm_delete.html', {'food': food})
+
+
+
+# @login_required
+# def meals_list(request):
+#     meals_qs = MealEntry.objects.filter(user=request.user).order_by('-date', '-id')
+#     seen_foods = set()
+#     meals = []
+#     for meal in meals_qs:
+#         if meal.food.id not in seen_foods:
+#             meals.append(meal)
+#             seen_foods.add(meal.food.id)
+#     return render(request, 'meals_list.html', {'meals': meals})
 
 
 
@@ -122,28 +155,28 @@ def meal_create(request):
     return render(request, 'meal_form.html', {'form': form, 'title': 'Add Meal'})
 
 
-@login_required
-def meal_delete(request, pk):
-    meal = get_object_or_404(MealEntry, pk=pk, user=request.user)
-    if request.method == 'POST':
-        meal.delete()
-        messages.success(request, 'Meal removed.')
-        return redirect('food_list')
-    return render(request, 'meal_confirm_delete.html', {'form': None, 'delete_obj': meal, 'title': 'Delete Meal'})
+# @login_required
+# def meal_delete(request, pk):
+#     meal = get_object_or_404(MealEntry, pk=pk, user=request.user)
+#     if request.method == 'POST':
+#         meal.delete()
+#         messages.success(request, 'Meal removed.')
+#         return redirect('food_list')
+#     return render(request, 'meal_confirm_delete.html', {'form': None, 'delete_obj': meal, 'title': 'Delete Meal'})
 
-@login_required
-def meal_edit(request, meal_id):
-    meal = get_object_or_404(MealEntry, id=meal_id, user=request.user)  # only the owner can edit
+# @login_required
+# def meal_edit(request, meal_id):
+#     meal = get_object_or_404(MealEntry, id=meal_id, user=request.user)  # only the owner can edit
 
-    if request.method == "POST":
-        form = MealEntryForm(request.POST, instance=meal)
-        if form.is_valid():
-            form.save()
-            return redirect('meals_list')  # after editing, go back to list
-    else:
-        form = MealEntryForm(instance=meal)
+#     if request.method == "POST":
+#         form = MealEntryForm(request.POST, instance=meal)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('meals_list')  # after editing, go back to list
+#     else:
+#         form = MealEntryForm(instance=meal)
 
-    return render(request, "meal_edit.html", {"form": form, "meal": meal})
+#     return render(request, "meal_edit.html", {"form": form, "meal": meal})
 
 
 # for daily Kcal intake

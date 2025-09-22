@@ -31,3 +31,13 @@ class MealEntryForm(forms.ModelForm):
 class WeightUpdateForm(forms.Form):
     weight_kg = forms.FloatField(label="Weight (kg)", min_value=0, max_value=500,
                                  widget=forms.NumberInput(attrs={'step': '0.1', 'class': 'form-control'}))
+    
+
+# foods_list control over only the superuser. 
+class FoodForm(forms.ModelForm):
+    class Meta:
+        model = Food
+        fields = ['name', 'serving_size_g', 'kcal', 'protein_g', 'fat_g', 'carbs_g']
+        # or use exclude = ['creator', 'created_at']
+
+    

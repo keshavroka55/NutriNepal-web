@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<h1>Foods</h1>
+
+<a href="{% url 'food_create' %}" class="btn btn-primary">Add Food</a>
+
+<table class="table table-striped mt-3">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Serving (g)</th>
+            <th>Kcal</th>
+            <th>Protein (g)</th>
+            <th>Fat (g)</th>
+            <th>Carbs (g)</th>
+            <th>Creator</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for food in foods %}
+        <tr>
+            <td>{{ food.name }}</td>
+            <td>{{ food.serving_size_g }}</td>
+            <td>{{ food.kcal }}</td>
+            <td>{{ food.protein_g }}</td>
+            <td>{{ food.fat_g }}</td>
+            <td>{{ food.carbs_g }}</td>
+            <td>
+                {% if food.creator %}
+                    {% if food.creator.is_superuser %}
+                        {{ food.creator.username }} (Admin)
+                    {% else %}
+                        {{ food.creator.username }}
+                    {% endif %}
+                {% else %}
+                    system
+                {% endif %}
+            </td>
+            <td>
+                {% if user.is_superuser or food.creator == user %}
+                    <a href="{% url 'food_update' food.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                    <a href="{% url 'food_delete' food.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="8">No foods found.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Foods</h1>
+
+<form method="get" class="mb-3 form-inline">
+  <div class="form-row">
+    <div class="col">
+      <input type="search" name="q" class="form-control" placeholder="Search name..." value="{{ q }}">
+    </div>
+
+    <div class="col-auto">
+      <select name="creator" class="form-control">
+        <option value="all" {% if creator_filter == 'all' %}selected{% endif %}>All (default)</option>
+        <option value="global" {% if creator_filter == 'global' %}selected{% endif %}>Global (superuser)</option>
+        <option value="my" {% if creator_filter == 'my' %}selected{% endif %}>My foods</option>
+      </select>
+    </div>
+
+    <div class="col-auto">
+      <button class="btn btn-primary" type="submit">Search</button>
+      <a class="btn btn-secondary" href="{% url 'foods_list' %}">Reset</a>
+    </div>
+  </div>
+</form>
+
+<!-- results table (loop through foods Page object) -->
+<table class="table table-striped">
+  <tbody>
+    {% for food in foods %}
+      <tr>
+        <td>{{ food.name }}</td>
+        <td>{{ food.serving_size_g }}</td>
+        <td>{{ food.kcal }}</td>
+        <td>{{ food.protein_g }}</td>
+        <td>{{ food.fat_g }}</td>
+        <td>{{ food.carbs_g }}</td>
+        <td>
+          {% if food.creator %}
+            {% if food.creator.is_superuser %}{{ food.creator.username }} (global)
+            {% else %}{{ food.creator.username }}{% endif %}
+          {% else %}system{% endif %}
+        </td>
+        <td>
+          {% if user.is_superuser or food.creator == user %}
+            <a href="{% url 'food_update' food.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+            <a href="{% url 'food_delete' food.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+            {% comment %} 
+            - need to work on it that if a user search food
+            - option to add on the favorite food where only show the user favorite foods is showing. 
+            {% endcomment %}
+          {% endif %}
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="8">No foods found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<!-- pagination -->
+<nav aria-label="Page navigation">
+  <ul class="pagination">
+    {% if foods.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?{{ query_params.urlencode }}&page={{ foods.previous_page_number }}" aria-label="Previous">Prev</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">Prev</span></li>
+    {% endif %}
+
+    {% for n in foods.paginator.page_range %}
+      {% if n == foods.number %}
+        <li class="page-item active"><span class="page-link">{{ n }}</span></li>
+      {% else %}
+        <li class="page-item">
+          <a class="page-link" href="?{{ query_params.urlencode }}&page={{ n }}">{{ n }}</a>
+        </li>
+      {% endif %}
+    {% endfor %}
+
+    {% if foods.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?{{ query_params.urlencode }}&page={{ foods.next_page_number }}" aria-label="Next">Next</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">Next</span></li>
+    {% endif %}
+  </ul>
+</nav>
+
+{% endblock %}

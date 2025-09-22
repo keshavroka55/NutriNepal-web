@@ -8,14 +8,17 @@ urlpatterns = [
 
     path('dashboard', views.dashboard, name='dashboard'),
 
-    path('foods/', views.foods_list, name='foods_list'),
-    # path('food_list/',views.show_food_list, name='all_food_list'),
-    path('foods/add/', views.food_create, name='add_food'),
 
-    path('meals/', views.meals_list, name='food_list'),
+    path('foods/', views.foods_list, name='foods_list'),
+    path('food/add/', views.food_create, name='food_create'),
+    path('food/<int:pk>/edit/', views.food_update, name='food_update'),
+    path('food/<int:pk>/delete/', views.food_delete, name='food_delete'),
+
+
+    # path('meals/', views.meals_list, name='food_list'),
     path('meals/add/', views.meal_create, name='meal_create'),
-    path('meals/<int:pk>/delete/', views.meal_delete, name='meal_delete'),
-    path("meals/<int:meal_id>/edit/", views.meal_edit, name="meal_edit"),
+    # path('meals/<int:pk>/delete/', views.meal_delete, name='meal_delete'),
+    # path("meals/<int:meal_id>/edit/", views.meal_edit, name="meal_edit"),
 
     path('daily-kcal/', views.daily_kcal_summary, name='daily_kcal_summary'),
     # detail view uses year/month/day so links are pretty and RESTful
