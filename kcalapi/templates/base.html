@@ -12,10 +12,10 @@
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav ms-auto">
                     {% if user.is_authenticated %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'daily_kcal_summary' %}">Daily Summary</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'weight_history' %}">Weight History</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'foods_list' %}">Food List</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'weight_history' %}">Weight History</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'daily_kcal_summary' %}">Daily Intake Summary</a></li>
 
                         
                         <li class="nav-item"><a class="nav-link" href="{% url 'userprofile' %}">Profile</a></li>
@@ -88,7 +88,16 @@
               {% if user.is_authenticated %}
                 <div class="mt-4 d-flex gap-2">
                   <a href="{% url 'dashboard' %}" class="btn btn-success btn-lg">Open Dashboard</a>
+                  <a href="{% url 'admin_report_list' %}" class="btn btn-success btn-lg">For Admin to view the report!</a>
+
+
                 </div>
+
+                <div class="mt-4 d-flex gap-2">
+                  <a href="{% url 'report_create' %}" class="btn btn-success btn-lg">Report a Bug/Error!</a>
+                </div>
+
+
             
                 <div class="row mt-4 g-3">
                   <div class="col-sm-4">
@@ -115,10 +124,10 @@
             
               {% else %}
                 <div class="mt-4">
-                  <div class="alert alert-light d-flex align-items-center" role="alert">
+                  {% comment %} <div class="alert alert-light d-flex align-items-center" role="alert">
                     <div class="me-3">
                       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#0e5f46" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    </div>
+                    </div> {% endcomment %}
                     <div>
                       <div><strong>Welcome —</strong> please sign in to save your progress and access your dashboard.</div>
                       {% comment %} <div class="small-muted mt-1">You will be redirected in <span id="countdown">5</span> seconds.</div> {% endcomment %}
@@ -203,11 +212,11 @@
 
         <footer class="container py-4 small-muted">
           <div class="d-flex justify-content-between">
-            <div>© {{ now.year }} Nutrinepal</div>
+            <div>© {{ now.year }} 2025 Nutrinepal</div>
             <div>
               <a href="{% url 'weight_history' %}" class="small-muted me-3">About</a>
               <a href="{% url 'weight_history' %}" class="small-muted">Contact</a>
-              <a href="{% url 'weight_history' %}" class="small-muted">Report Bug/Error</a>
+              <a href="{% url 'report_create' %}" class="small-muted">Report Bug/Error</a>
 
             </div>
           </div>

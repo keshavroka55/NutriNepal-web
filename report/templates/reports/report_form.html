@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-4">
+  <h1>{{ title }}</h1>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="mb-3">
+      {{ form.subject.label_tag }} {{ form.subject }}
+      {{ form.subject.errors }}
+    </div>
+    <div class="mb-3">
+      {{ form.description.label_tag }} {{ form.description }}
+      {{ form.description.errors }}
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        {{ form.priority.label_tag }} {{ form.priority }}
+      </div>
+      <div class="col-md-8">
+        {{ form.attachment.label_tag }} {{ form.attachment }}
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit Report</button>
+    <a class="btn btn-secondary" href="{% url 'report_user_list' %}">My Reports</a>
+  </form>
+</div>
+{% endblock %}

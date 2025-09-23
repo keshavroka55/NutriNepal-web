@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between">
+    <h1>Report #{{ report.pk }} — {{ report.subject }}</h1>
+    <div><a class="btn btn-secondary" href="{% url 'admin_report_list' %}">Back</a></div>
+  </div>
+
+  <p class="text-muted">Reporter: {{ report.reporter.username }} • Created: {{ report.created_at|date:"SHORT_DATETIME_FORMAT" }}</p>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <h6>Description</h6>
+      <p>{{ report.description|linebreaks }}</p>
+      {% if report.attachment %}
+        <p>Attachment: <a href="{{ report.attachment.url }}" target="_blank">{{ report.attachment.name }}</a></p>
+      {% endif %}
+    </div>
+  </div>
+
+  <form method="post" class="card card-body">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="row">
+      <div class="col-md-3 mb-3">{{ form.status.label_tag }} {{ form.status }}</div>
+      <div class="col-md-3 mb-3">{{ form.priority.label_tag }} {{ form.priority }}</div>
+      <div class="col-md-3 mb-3">{{ form.resolved_by.label_tag }} {{ form.resolved_by }}</div>
+    </div>
+
+    <div class="mb-3">
+      {{ form.admin_comment.label_tag }}
+      {{ form.admin_comment }}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save changes</button>
+  </form>
+</div>
+{% endblock %}

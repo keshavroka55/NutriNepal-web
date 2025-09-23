@@ -184,9 +184,11 @@ def meal_create(request):
 @login_required
 def daily_kcal_summary(request):
     """
-    Returns a list of days (date) with total kcal, protein, fat, carbs for the logged-in user.
+    Aggregate MealEntry per day for the logged-in user and return a list-of-dicts:
+      [{'date': 'YYYY-MM-DD', 'total_kcal': 2200.0, 'total_protein': 120.0, ...}, ...]
+    ORDER: oldest -> newest (ascending) so the template/chart code can treat the last item as the latest day.
     """
-    daily_kcal = (
+    qs = (
         MealEntry.objects.filter(user=request.user)
         .values('date')
         .annotate(
@@ -195,8 +197,22 @@ def daily_kcal_summary(request):
             total_fat=Sum(F('food__fat_g') * F('servings'), output_field=FloatField()),
             total_carbs=Sum(F('food__carbs_g') * F('servings'), output_field=FloatField()),
         )
-        .order_by('-date')  # newest first
+        .order_by('date')  # <-- ascending: oldest first, newest last
     )
+
+    # convert to list of simple dicts with ISO date strings and float values
+    daily_kcal = []
+    for r in qs:
+        d = r.get('date')
+        daily_kcal.append({
+            'date': d,  # keep Python date object
+            'date_str': d.isoformat() if hasattr(d, 'isoformat') else str(d),  # for Chart.js
+            'total_kcal': float(r['total_kcal'] or 0),
+            'total_protein': float(r['total_protein'] or 0),
+            'total_fat': float(r['total_fat'] or 0),
+            'total_carbs': float(r['total_carbs'] or 0),
+        })
+
     return render(request, 'history/daily_kcal_summary.html', {'daily_kcal': daily_kcal})
 
 @login_required

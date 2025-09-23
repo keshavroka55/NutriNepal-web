@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-4">
+  <h1>All Reports</h1>
+
+  <form method="get" class="row g-2 mb-3">
+    <div class="col-auto"><select name="status" class="form-select">
+      <option value="">All statuses</option>
+      <option value="open">Open</option>
+      <option value="in_progress">In Progress</option>
+      <option value="resolved">Resolved</option>
+      <option value="closed">Closed</option>
+    </select></div>
+    <div class="col-auto"><select name="priority" class="form-select">
+      <option value="">All priorities</option>
+      <option value="high">High</option>
+      <option value="medium">Medium</option>
+      <option value="low">Low</option>
+    </select></div>
+    <div class="col-auto"><button class="btn btn-primary" type="submit">Filter</button></div>
+  </form>
+
+  <table class="table table-striped">
+    <thead>
+      <tr><th>Reporter</th><th>Subject</th><th>Status</th><th>Priority</th><th>Created</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for r in reports %}
+      <tr>
+        <td>{{ r.reporter.username }}</td>
+        <td>{{ r.subject }}</td>
+        <td>{{ r.get_status_display }}</td>
+        <td>{{ r.get_priority_display }}</td>
+        <td>{{ r.created_at|date:"SHORT_DATETIME_FORMAT" }}</td>
+        <td><a class="btn btn-sm btn-outline-primary" href="{% url 'admin_report_detail' r.pk %}">Open</a></td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6">No reports found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

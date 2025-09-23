@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'tracker',
     'authsys',
     'searchF',
+    'report',
     # for google auth.
     'social_django',
     'django.contrib.sites',
@@ -104,6 +105,8 @@ TEMPLATES = [
             BASE_DIR / "tracker"/ "templates",
             BASE_DIR / "authsys"/ "templates",
             BASE_DIR / "searchF"/ "templates",
+            BASE_DIR / "report"/ "templates",
+
 
 
 

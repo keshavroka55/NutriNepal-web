@@ -25,6 +25,8 @@ urlpatterns = [
     path('tracker/', include('tracker.urls')),
     path('authsys/', include('authsys.urls')),
     path('search/',include('searchF.urls')),
+    path('report/',include('report.urls')),
+
     # for google login auth
     path("accounts",include("allauth.urls")),
     path('oauth/', include('social_django.urls', namespace='social')),

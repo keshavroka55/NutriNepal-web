@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-4">
+  <h1>{{ report.subject }}</h1>
+  <p class="text-muted">Status: {{ report.get_status_display }} • Priority: {{ report.get_priority_display }}</p>
+  <p>{{ report.description|linebreaks }}</p>
+
+  {% if report.attachment %}
+    <p>Attachment: <a href="{{ report.attachment.url }}" target="_blank">{{ report.filename}}</a></p>
+  {% endif %}
+
+  {% if report.admin_comment %}
+    <div class="card mt-3">
+      <div class="card-body">
+        <h6>Admin note</h6>
+        <p>{{ report.admin_comment|linebreaks }}</p>
+      </div>
+    </div>
+  {% endif %}
+  <a class="btn btn-secondary mt-3" href="{% url 'report_user_list' %}">Back</a>
+</div>
+{% endblock %}
