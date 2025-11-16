@@ -1,227 +1,425 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Kcal Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}NutriNepal - Track Calories & Gain Healthy Weight{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/homepage.css' %}">
+    {% block head_extra %}{% endblock %}
 </head>
-<body   ass="bg-light">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+<body class="bg-light">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'homepage' %}">Kcal Tracker</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto">
+            <a class="navbar-brand logo" href="{% url 'homepage' %}">
+                <span class="logo-icon">🥗</span>
+                NutriNepal
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
                     {% if user.is_authenticated %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'daily_kcal_summary' %}">Daily Summary</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'daily_kcal_summary' %}">Daily Summary</a>
+                    </li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'weight_history' %}">Weight History</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'foods_list' %}">Food List</a></li>
-
-                        
-                        <li class="nav-item"><a class="nav-link" href="{% url 'userprofile' %}">Profile</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'foods_list' %}">Food List</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'userprofile' %}">Profile</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-report" href="{% url 'report_create' %}">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path
+                                    d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                                <line x1="12" y1="9" x2="12" y2="13" />
+                                <line x1="12" y1="17" x2="12.01" y2="17" />
+                            </svg>
+                            Report Bug
+                        </a>
+                    </li>
                     {% else %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">Signup</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'homepage' %}#features">Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'homepage' %}#how-it-works">How It Works</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+                    <li class="nav-item"><a class="btn btn-signup" href="{% url 'register' %}">Sign Up Free</a></li>
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-report" href="{% url 'report_create' %}">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path
+                                    d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                                <line x1="12" y1="9" x2="12" y2="13" />
+                                <line x1="12" y1="17" x2="12.01" y2="17" />
+                            </svg>
+                            Report Bug
+                        </a>
+                    </li>
                     {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
-        {% if messages %}
-            <div class="messages">
-                {% for message in messages %}
-                    <div class="alert 
-                    {% if message.tags %}alert-{{ message.tags }}{% endif %}">
-                {{ message }}
-            </div>
-        {% endfor %}
-        {% endif %}
-    </div>
 
-    <div class="container my-4">
-    {% block content %}
-        <style>
-          /* small, self-contained styles so you get a nicer look without changing base.css */
-          .hero {
-            padding: 4rem 0;
-            background: linear-gradient(180deg, rgba(14,95,70,0.06), rgba(255,255,255,0));
-          }
-          .hero .title {
-            font-size: 2.25rem;
-            font-weight: 700;
-            line-height: 1.05;
-          }
-          .pill {
-            display:inline-block;
-            padding: .25rem .6rem;
-            border-radius: 999px;
-            font-weight:600;
-            background: rgba(14,95,70,0.08);
-            color: #0e5f46;
-            margin-bottom: .75rem;
-          }
-          .feature {
-            border-radius: 12px;
-            padding: 1rem;
-            box-shadow: 0 6px 18px rgba(12, 12, 12, 0.04);
-            background: #fff;
-          }
-          .small-muted { font-size: .9rem; color: #6c757d; }
-          .countdown { font-weight:700; color:#0e5f46; }
-          @media (max-width: 767px) {
-            .hero { padding: 2rem 0; }
-            .hero .title { font-size: 1.5rem; }
-          }
-        </style>
-
-        <div class="container hero">
-          <div class="row align-items-center">
-            <div class="col-lg-7">
-              <span class="pill">Nutrinepal</span>
-              <h1 class="title mt-2">Track calories. Gain healthy weight. Feel stronger.</h1>
-              <p class="lead small-muted mt-3">
-                Personalized Kcal tracking and weight gain plans built for Nepali foods.
-                Log meals, watch progress, and reach your target weight with confidence.
-              </p>
-          
-              {% if user.is_authenticated %}
-                <div class="mt-4 d-flex gap-2">
-                  <a href="{% url 'dashboard' %}" class="btn btn-success btn-lg">Open Dashboard</a>
-                  <a href="{% url 'admin_report_list' %}" class="btn btn-success btn-lg">For Admin to view the report!</a>
-
-
-                </div>
-
-                <div class="mt-4 d-flex gap-2">
-                  <a href="{% url 'report_create' %}" class="btn btn-success btn-lg">Report a Bug/Error!</a>
-                </div>
-
-
-            
-                <div class="row mt-4 g-3">
-                  <div class="col-sm-4">
-                    <div class="feature text-center">
-                      <div class="small-muted">Daily goal</div>
-                      <div class="h4 mt-1">{{ user.profile.daily_target_kcal|default:"3000" }} kcal</div>
-                    </div>
-                  </div>
-                  {% comment %} <div class="col-sm-4">
-                    <div class="feature text-center">
-                      <div class="small-muted">Today Consume</div>
-                      <div class="h4 mt-1">{{user.profile.total_kcal|default:"0" }} kcal</div>
-                    </div>
-                  </div> {% endcomment %}
-                  <div class="col-sm-4">
-                    <div class="feature text-center">
-                      <div class="small-muted">Weight</div>
-                      <div class="h4 mt-1">{{ user.profile.weight_kg|default:"--" }} kg
-                        {% comment %} <div class="small-muted">({{ weight_change|default:"0" }} kg this week)</div> {% endcomment %}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-            
-              {% else %}
-                <div class="mt-4">
-                  {% comment %} <div class="alert alert-light d-flex align-items-center" role="alert">
-                    <div class="me-3">
-                      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#0e5f46" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    </div> {% endcomment %}
-                    <div>
-                      <div><strong>Welcome —</strong> please sign in to save your progress and access your dashboard.</div>
-                      {% comment %} <div class="small-muted mt-1">You will be redirected in <span id="countdown">5</span> seconds.</div> {% endcomment %}
-                      <div class="mt-3">
-                        <a href="{% url 'login' %}" class="btn btn-success btn-sm me-2">Login</a>
-                        <a href="{% url 'register' %}" class="btn btn-outline-success btn-sm">Sign up</a>
-                        <span class="small-muted ms-3">No account? Sign up — it's free.</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-            
-                {# Auto-redirect script: shows countdown and navigates to login after 5s #}
-                <script>
-                  (function(){
-                    var secs = 5;
-                    var el = document.getElementById('countdown');
-                    var url = "{% url 'login' %}";
-                    var interval = setInterval(function(){
-                      secs = secs - 1;
-                      if (el) el.textContent = secs;
-                      if (secs <= 0) {
-                        clearInterval(interval);
-                        window.location.href = url;
-                      }
-                    }, 1000);
-                  })();
-                </script>
-            
-              {% endif %}
-            </div>
-        
-            <div class="col-lg-5 d-none d-lg-block">
-              <div class="feature">
-                <h5 class="mb-2">How Nurtinepal helps you</h5>
-                <ul class="small-muted mb-3">
-                  <li>Extensive Nepali food database (calories, protein, carbs, fat).</li>
-                  <li>Daily meal logs and calorie summaries.</li>
-                  <li>Track weight history and see progress charts.</li>
-                </ul>
-            
-                <h6 class="small-muted">Quick preview</h6>
-                <div class="mt-2">
-                  <div class="small-muted">Recent weight history</div>
-                  <div class="mt-2" style="height:120px; display:flex; align-items:center; justify-content:center; color:#999;">
-                    <!-- small placeholder for a sparkline/graph -->
-                    <svg width="100%" height="100%" viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true">
-                      <polyline points="0,40 30,30 60,35 90,20 120,25 150,15 180,20 200,10" fill="none" stroke="#0e5f46" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Django Messages -->
+    {% if messages %}
+    <div class="container mt-3">
+        <div class="messages-container">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show custom-alert"
+                role="alert">
+                <div class="d-flex align-items-center">
+                    {% if message.tags == 'success' %}
+                    <svg class="alert-icon me-2" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
                     </svg>
-                  </div>
-                  <div class="small-muted mt-2">Open your dashboard for full charts & history.</div>
+                    {% elif message.tags == 'error' or message.tags == 'danger' %}
+                    <svg class="alert-icon me-2" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="15" y1="9" x2="9" y2="15"></line>
+                        <line x1="9" y1="9" x2="15" y2="15"></line>
+                    </svg>
+                    {% elif message.tags == 'warning' %}
+                    <svg class="alert-icon me-2" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                        <line x1="12" y1="9" x2="12" y2="13" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                    {% else %}
+                    <svg class="alert-icon me-2" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    {% endif %}
+                    <div class="flex-grow-1">{{ message }}</div>
                 </div>
-              </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-          </div>
+            {% endfor %}
         </div>
-
-        <hr>
-
-        <div class="container py-4">
-          <div class="row g-4">
-            <div class="col-md-4">
-              <div class="feature text-center">
-                <h5>Meal Logger</h5>
-                <p class="small-muted mb-0">Quick-add common Nepali meals (dal, bhaat, tarkari), auto-calc kcal.</p>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="feature text-center">
-                <h5>Progress Charts</h5>
-                <p class="small-muted mb-0">Track weight and calorie trends with exportable charts.</p>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="feature text-center">
-                <h5>Personal Plans</h5>
-                <p class="small-muted mb-0">Weight-gain meal suggestions with daily kcal targets.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <footer class="container py-4 small-muted">
-          <div class="d-flex justify-content-between">
-            <div>© {{ now.year }} 2025 Nutrinepal</div>
-            <div>
-              <a href="{% url 'weight_history' %}" class="small-muted me-3">About</a>
-              <a href="{% url 'weight_history' %}" class="small-muted">Contact</a>
-              <a href="{% url 'report_create' %}" class="small-muted">Report Bug/Error</a>
-
-            </div>
-          </div>
-        </footer> 
-    {% endblock %}
     </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <div class="main-content">
+        {% block content %}
+        <!-- Default Homepage Content (only shows when not overridden) -->
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-bg"></div>
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6">
+                        <div class="hero-content">
+                            <span class="badge-pill animate-fade-in">🇳🇵 Made for Nepal</span>
+                            <h1 class="hero-title animate-slide-up">
+                                Track calories.<br>
+                                <span class="gradient-text">Gain healthy weight.</span><br>
+                                Feel stronger.
+                            </h1>
+                            <p class="hero-subtitle animate-slide-up delay-1">
+                                Personalized calorie tracking and weight gain plans built specifically for Nepali foods.
+                                Log meals, watch progress, and reach your target weight with confidence.
+                            </p>
+
+                            {% if user.is_authenticated %}
+                            <div class="hero-cta animate-slide-up delay-2">
+                                <a href="{% url 'dashboard' %}" class="btn btn-primary btn-lg">
+                                    Open Dashboard
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <line x1="5" y1="12" x2="19" y2="12" />
+                                        <polyline points="12 5 19 12 12 19" />
+                                    </svg>
+                                </a>
+                                {% if user.is_staff %}
+                                <a href="{% url 'admin_report_list' %}" class="btn btn-outline btn-lg">
+                                    Admin Reports
+                                </a>
+                                {% endif %}
+                            </div>
+
+                            {% else %}
+                            <div class="hero-cta animate-slide-up delay-2">
+                                <a href="{% url 'register' %}" class="btn btn-primary btn-lg">
+                                    Get Started Free
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <line x1="5" y1="12" x2="19" y2="12" />
+                                        <polyline points="12 5 19 12 12 19" />
+                                    </svg>
+                                </a>
+                                <a href="#how-it-works" class="btn btn-outline btn-lg">
+                                    Learn More
+                                </a>
+                            </div>
+
+                            <div class="hero-stats animate-fade-in delay-3">
+                                <div class="stat-item">
+                                    <div class="stat-number">500+</div>
+                                    <div class="stat-label">Nepali Foods</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-number">1000+</div>
+                                    <div class="stat-label">Happy Users</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-number">100%</div>
+                                    <div class="stat-label">Free Forever</div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="hero-visual animate-float">
+                            <div class="dashboard-preview">
+                                <div class="preview-header">
+                                    <div class="preview-dot"></div>
+                                    <div class="preview-dot"></div>
+                                    <div class="preview-dot"></div>
+                                </div>
+                                <div class="preview-content">
+                                    <div class="preview-card">
+                                        <div class="card-icon">🎯</div>
+                                        <div class="card-text">
+                                            <div class="card-label">Daily Goal</div>
+                                            <div class="card-value">{{ user.profile.daily_target_kcal|default:"3000" }}
+                                                kcal</div>
+                                        </div>
+                                        <div class="progress-ring">
+                                            <svg viewBox="0 0 36 36">
+                                                <path class="circle-bg"
+                                                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                                <path class="circle" stroke-dasharray="75, 100"
+                                                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div class="preview-card">
+                                        <div class="card-icon">⚖️</div>
+                                        <div class="card-text">
+                                            <div class="card-label">Current Weight</div>
+                                            <div class="card-value">{{ user.profile.weight_kg|default:"--" }} kg</div>
+                                        </div>
+                                        <div class="trend-up">↗ +2kg </div>
+                                        <!-- need to work on this weight increase ration from weight growth rate...  -->
+                                    </div>
+                                    <div class="chart-preview">
+                                        <svg viewBox="0 0 200 80" preserveAspectRatio="none">
+                                            <defs>
+                                                <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                    <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.3" />
+                                                    <stop offset="100%" style="stop-color:#10b981;stop-opacity:0" />
+                                                </linearGradient>
+                                            </defs>
+                                            <polyline points="0,60 25,55 50,50 75,45 100,42 125,38 150,35 175,32 200,28"
+                                                fill="url(#gradient)" />
+                                            <polyline points="0,60 25,55 50,50 75,45 100,42 125,38 150,35 175,32 200,28"
+                                                fill="none" stroke="#10b981" stroke-width="2" />
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="features-section">
+            <div class="container">
+                <div class="section-header text-center">
+                    <span class="section-badge">Features</span>
+                    <h2 class="section-title">Everything you need to reach your goals</h2>
+                    <p class="section-subtitle">Powerful tools designed specifically for Nepali food and culture</p>
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="feature-card">
+                            <div class="feature-icon">🍛</div>
+                            <h3 class="feature-title">Nepali Food Database</h3>
+                            <p class="feature-text">Comprehensive database with dal, bhaat, tarkari, momo, and 500+
+                                traditional Nepali foods with accurate calorie counts.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card">
+                            <div class="feature-icon">📊</div>
+                            <h3 class="feature-title">Smart Tracking</h3>
+                            <p class="feature-text">Log meals in seconds. Track calories, protein, carbs, and fats. See
+                                daily summaries and progress charts.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card">
+                            <div class="feature-icon">📈</div>
+                            <h3 class="feature-title">Weight Progress</h3>
+                            <p class="feature-text">Monitor your weight journey with beautiful charts. Export data and
+                                celebrate every milestone.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card">
+                            <div class="feature-icon">🎯</div>
+                            <h3 class="feature-title">Personal Goals</h3>
+                            <p class="feature-text">Set custom daily calorie targets based on your weight gain goals.
+                                Get personalized meal suggestions.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card">
+                            <div class="feature-icon">📱</div>
+                            <h3 class="feature-title">Mobile Friendly</h3>
+                            <p class="feature-text">Access your dashboard anywhere. Log meals on the go. Stay consistent
+                                with your nutrition plan.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card">
+                            <div class="feature-icon">🔒</div>
+                            <h3 class="feature-title">Privacy First</h3>
+                            <p class="feature-text">Your data is secure and private. No ads, no selling your
+                                information. Just pure health tracking.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- How It Works Section -->
+        <section id="how-it-works" class="how-section">
+            <div class="container">
+                <div class="section-header text-center">
+                    <span class="section-badge">Simple Process</span>
+                    <h2 class="section-title">How NutriNepal Works</h2>
+                </div>
+                <div class="row g-5">
+                    <div class="col-md-4">
+                        <div class="step-card">
+                            <div class="step-number">1</div>
+                            <h3 class="step-title">Create Account</h3>
+                            <p class="step-text">Sign up free in 30 seconds. Add your current weight and target weight.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="step-card">
+                            <div class="step-number">2</div>
+                            <h3 class="step-title">Log Your Meals</h3>
+                            <p class="step-text">Search our Nepali food database and add what you eat. Quick and easy.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="step-card">
+                            <div class="step-number">3</div>
+                            <h3 class="step-title">Track Progress</h3>
+                            <p class="step-text">Watch your weight increase. See charts. Adjust your plan as needed.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        {% if not user.is_authenticated %}
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-card">
+                    <h2 class="cta-title">Ready to start your journey?</h2>
+                    <p class="cta-text">Join hundreds of Nepalis gaining healthy weight with NutriNepal</p>
+                    <a href="{% url 'register' %}" class="btn btn-cta btn-lg">
+                        Create Free Account
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                            <polyline points="12 5 19 12 12 19" />
+                        </svg>
+                    </a>
+                    <p class="cta-note">No credit card required • Free forever • Setup in 30 seconds</p>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+        {% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <div class="footer-brand">
+                        <span class="logo-icon">🥗</span>
+                        <span class="brand-name">NutriNepal</span>
+                    </div>
+                    <p class="footer-text">Empowering Nepalis to achieve their health goals through smart nutrition
+                        tracking.</p>
+                </div>
+                <div class="col-md-2 col-6 mb-4 mb-md-0">
+                    <h5 class="footer-heading">Product</h5>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'homepage' %}#features">Features</a></li>
+                        <li><a href="{% url 'foods_list' %}">Food Database</a></li>
+                        {% if user.is_authenticated %}
+                        <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div class="col-md-2 col-6 mb-4 mb-md-0">
+                    <h5 class="footer-heading">Company</h5>
+                    <ul class="footer-links">
+                        <li><a href="https://www.keshavroka.com.np" target="_blank">About Me!</a></li>
+                        <li><a href="https://www.keshavdev.me" target="_blank">Contact</a></li>
+                        <li><a href="{% url 'report_create' %}">Report Bug</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 col-6">
+                    <h5 class="footer-heading">Legal</h5>
+                    <ul class="footer-links">
+                        <li><a href="#">Privacy</a></li>
+                        <li><a href="#">Terms</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 col-6">
+                    <h5 class="footer-heading">Account</h5>
+                    <ul class="footer-links">
+                        {% if user.is_authenticated %}
+                        <li><a href="{% url 'userprofile' %}">Profile</a></li>
+                        <li><a href="{% url 'logout' %}">Logout</a></li>
+                        {% else %}
+                        <li><a href="{% url 'login' %}">Login</a></li>
+                        <li><a href="{% url 'register' %}">Sign Up</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© {% now "2024" %} NutriNepal. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
 </body>
+
 </html>

@@ -1,0 +1,292 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriNepal - Track Calories & Gain Healthy Weight</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{%static 'css/homepage.css'%}">
+</head>
+<body class="bg-light">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand logo" href="{% url 'homepage' %}">
+                <span class="logo-icon">🥗</span>
+                NutriNepal
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#how-it-works">How It Works</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+                    <li class="nav-item"><a class="btn btn-signup" href="{% url 'register' %}">Sign Up Free</a></li>
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-report" href="{% url 'report_create' %}">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                                <line x1="12" y1="9" x2="12" y2="13"/>
+                                <line x1="12" y1="17" x2="12.01" y2="17"/>
+                            </svg>
+                            Report Bug
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="hero-content">
+                        <span class="badge-pill animate-fade-in">🇳🇵 Made for Nepal</span>
+                        <h1 class="hero-title animate-slide-up">
+                            Track calories.<br>
+                            <span class="gradient-text">Gain healthy weight.</span><br>
+                            Feel stronger.
+                        </h1>
+                        <p class="hero-subtitle animate-slide-up delay-1">
+                            Personalized calorie tracking and weight gain plans built specifically for Nepali foods. 
+                            Log meals, watch progress, and reach your target weight with confidence.
+                        </p>
+                        <div class="hero-cta animate-slide-up delay-2">
+                            <a href="{% url 'login' %}" class="btn btn-primary btn-lg">
+                                Get Started Free
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="5" y1="12" x2="19" y2="12"/>
+                                    <polyline points="12 5 19 12 12 19"/>
+                                </svg>
+                            </a>
+                            <a href="#how-it-works" class="btn btn-outline btn-lg">
+                                Learn More
+                            </a>
+                        </div>
+                        <div class="hero-stats animate-fade-in delay-3">
+                            <div class="stat-item">
+                                <div class="stat-number">500+</div>
+                                <div class="stat-label">Nepali Foods</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">1000+</div>
+                                <div class="stat-label">Happy Users</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">100%</div>
+                                <div class="stat-label">Free Forever</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="hero-visual animate-float">
+                        <div class="dashboard-preview">
+                            <div class="preview-header">
+                                <div class="preview-dot"></div>
+                                <div class="preview-dot"></div>
+                                <div class="preview-dot"></div>
+                            </div>
+                            <div class="preview-content">
+                                <div class="preview-card">
+                                    <div class="card-icon">🎯</div>
+                                    <div class="card-text">
+                                        <div class="card-label">Daily Goal</div>
+                                        <div class="card-value">3000 kcal</div>
+                                    </div>
+                                    <div class="progress-ring">
+                                        <svg viewBox="0 0 36 36">
+                                            <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                            <path class="circle" stroke-dasharray="75, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="preview-card">
+                                    <div class="card-icon">⚖️</div>
+                                    <div class="card-text">
+                                        <div class="card-label">Current Weight</div>
+                                        <div class="card-value">65 kg</div>
+                                    </div>
+                                    <div class="trend-up">↗ +2kg</div>
+                                </div>
+                                <div class="chart-preview">
+                                    <svg viewBox="0 0 200 80" preserveAspectRatio="none">
+                                        <defs>
+                                            <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.3"/>
+                                                <stop offset="100%" style="stop-color:#10b981;stop-opacity:0"/>
+                                            </linearGradient>
+                                        </defs>
+                                        <polyline points="0,60 25,55 50,50 75,45 100,42 125,38 150,35 175,32 200,28" fill="url(#gradient)"/>
+                                        <polyline points="0,60 25,55 50,50 75,45 100,42 125,38 150,35 175,32 200,28" fill="none" stroke="#10b981" stroke-width="2"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <div class="container">
+            <div class="section-header text-center">
+                <span class="section-badge">Features</span>
+                <h2 class="section-title">Everything you need to reach your goals</h2>
+                <p class="section-subtitle">Powerful tools designed specifically for Nepali food and culture</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">🍛</div>
+                        <h3 class="feature-title">Nepali Food Database</h3>
+                        <p class="feature-text">Comprehensive database with dal, bhaat, tarkari, momo, and 500+ traditional Nepali foods with accurate calorie counts.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3 class="feature-title">Smart Tracking</h3>
+                        <p class="feature-text">Log meals in seconds. Track calories, protein, carbs, and fats. See daily summaries and progress charts.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">📈</div>
+                        <h3 class="feature-title">Weight Progress</h3>
+                        <p class="feature-text">Monitor your weight journey with beautiful charts. Export data and celebrate every milestone.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">🎯</div>
+                        <h3 class="feature-title">Personal Goals</h3>
+                        <p class="feature-text">Set custom daily calorie targets based on your weight gain goals. Get personalized meal suggestions.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">📱</div>
+                        <h3 class="feature-title">Mobile Friendly</h3>
+                        <p class="feature-text">Access your dashboard anywhere. Log meals on the go. Stay consistent with your nutrition plan.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">🔒</div>
+                        <h3 class="feature-title">Privacy First</h3>
+                        <p class="feature-text">Your data is secure and private. No ads, no selling your information. Just pure health tracking.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="how-section">
+        <div class="container">
+            <div class="section-header text-center">
+                <span class="section-badge">Simple Process</span>
+                <h2 class="section-title">How NutriNepal Works</h2>
+            </div>
+            <div class="row g-5">
+                <div class="col-md-4">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <h3 class="step-title">Create Account</h3>
+                        <p class="step-text">Sign up free in 30 seconds. Add your current weight and target weight.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <h3 class="step-title">Log Your Meals</h3>
+                        <p class="step-text">Search our Nepali food database and add what you eat. Quick and easy.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <h3 class="step-title">Track Progress</h3>
+                        <p class="step-text">Watch your weight increase. See charts. Adjust your plan as needed.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-card">
+                <h2 class="cta-title">Ready to start your journey?</h2>
+                <p class="cta-text">Join hundreds of Nepalis gaining healthy weight with NutriNepal</p>
+                <a href="{% url 'register' %}" class="btn btn-cta btn-lg">
+                    Create Free Account
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                        <polyline points="12 5 19 12 12 19"/>
+                    </svg>
+                </a>
+                <p class="cta-note">No credit card required • Free forever • Setup in 30 seconds</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="footer-brand">
+                        <span class="logo-icon">🥗</span>
+                        <span class="brand-name">NutriNepal</span>
+                    </div>
+                    <p class="footer-text">Empowering Nepalis to achieve their health goals through smart nutrition tracking.</p>
+                </div>
+                <div class="col-md-2">
+                    <h5 class="footer-heading">Product</h5>
+                    <ul class="footer-links">
+                        <li><a href="{% url '' %}">Features</a></li>
+                        <li><a href="{% url '' %}">Food Database</a></li>
+                        <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2">
+                    <h5 class="footer-heading">Company</h5>
+                    <ul class="footer-links">
+                        <li><a href="https://www.keshavroka.com.np">About</a></li>
+                        <li><a href="https://www.keshavdev.me">Contact</a></li>
+                        <li><a href="{% url 'report_create' %}">Report Bug</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2">
+                    <h5 class="footer-heading">Legal</h5>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'homepage' %}">Privacy</a></li>
+                        <li><a href="{% url 'homepage' %}">Terms</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2">
+                    <h5 class="footer-heading">Account</h5>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'login' %}">Login</a></li>
+                        <li><a href="{% url 'register' %}">Sign Up</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 NutriNepal. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

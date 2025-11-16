@@ -1,9 +1,105 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="{% static 'css/addfood.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock %}
+
 {% block content %}
-<h2 class="mb-3">Add Food Item</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button class="btn btn-success" type="submit">Add</button>
-</form>
+<div class="form-container">
+
+    <div class="form-header">
+        <div class="header-content">
+            <div class="header-icon">
+                <i class="fa fa-utensils"></i>
+            </div>
+            <div class="header-text">
+                <h1>Add Your Favorite Food</h1>
+                <p>Create a custom food entry for quick tracking</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-card">
+
+        <div class="form-intro">
+            <div class="intro-icon">
+                <i class="fa fa-bowl-food"></i>
+            </div>
+            <div class="intro-text">
+                <h3>Create Custom Food Item</h3>
+                <p>Add nutritional information for your favorite dish</p>
+            </div>
+        </div>
+
+        <form method="post" class="modern-form">
+            {% csrf_token %}
+
+            <div class="form-grid">
+                {% for field in form %}
+                <div
+                    class="form-group {% if field.name == 'name' or field.name == 'description' %}form-group-full{% endif %}">
+                    <label for="{{ field.id_for_label }}" class="form-label">
+                        {% if field.name == 'name' %}
+                        <i class="fa fa-tag"></i>
+                        {% elif field.name == 'kcal' %}
+                        <i class="fa fa-fire"></i>
+                        {% elif field.name == 'protein_g' %}
+                        <i class="fa fa-dumbbell"></i>
+                        {% elif field.name == 'fat_g' %}
+                        <i class="fa fa-droplet"></i>
+                        {% elif field.name == 'carbs_g' %}
+                        <i class="fa fa-wheat-awn"></i>
+                        {% else %}
+                        <i class="fa fa-pen"></i>
+                        {% endif %}
+                        {{ field.label }}
+                        {% if field.field.required %}
+                        <span class="required">*</span>
+                        {% endif %}
+                    </label>
+
+                    {{ field }}
+
+                    {% if field.help_text %}
+                    <small class="form-help">{{ field.help_text }}</small>
+                    {% endif %}
+
+                    {% if field.errors %}
+                    <div class="form-error">
+                        {% for error in field.errors %}
+                        <i class="fa fa-circle-exclamation"></i> {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="form-footer">
+                <button type="button" class="btn btn-cancel" onclick="window.history.back()">
+                    <i class="fa fa-times"></i>
+                    Cancel
+                </button>
+                <button type="submit" class="btn btn-submit">
+                    <i class="fa fa-check"></i>
+                    Add Food
+                </button>
+            </div>
+
+        </form>
+
+        <div class="form-tips">
+            <h4><i class="fa fa-lightbulb"></i> Quick Tips</h4>
+            <ul>
+                <li><i class="fa fa-circle-check"></i> Be as accurate as possible with nutritional values</li>
+                <li><i class="fa fa-circle-check"></i> Use standard serving sizes (100g, 1 cup, etc.)</li>
+                <li><i class="fa fa-circle-check"></i> Check food labels for accurate macro information</li>
+            </ul>
+        </div>
+
+    </div>
+</div>
 {% endblock %}

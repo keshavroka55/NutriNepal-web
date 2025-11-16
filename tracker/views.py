@@ -58,13 +58,6 @@ def dashboard(request):
     }
     return render(request, 'dashboard.html', context)
 
-
-
-# @login_required
-# def foods_list(request):
-#     foods = Food.objects.all().order_by('name')
-#     return render(request, 'foods_list.html', {'foods': foods})
-
 @login_required
 def foods_list(request):
     """
@@ -89,7 +82,7 @@ def food_create(request):
             return redirect('foods_list')
     else:
         form = FoodForm()
-    return render(request, 'FoodCURD/food_form.html', {'form': form, 'title': 'Add Food'})
+    return render(request, 'add_food.html', {'form': form, 'title': 'Add Food'})
 
 @login_required
 def food_update(request, pk):
@@ -107,7 +100,7 @@ def food_update(request, pk):
             return redirect('foods_list')
     else:
         form = FoodForm(instance=food)
-    return render(request, 'FoodCURD/food_form.html', {'form': form, 'title': 'Edit Food'})
+    return render(request, 'food_form.html', {'form': form, 'title': 'Edit Food'})
 
 @login_required
 def food_delete(request, pk):
@@ -126,20 +119,6 @@ def food_delete(request, pk):
     return render(request, 'FoodCURD/food_confirm_delete.html', {'food': food})
 
 
-
-# @login_required
-# def meals_list(request):
-#     meals_qs = MealEntry.objects.filter(user=request.user).order_by('-date', '-id')
-#     seen_foods = set()
-#     meals = []
-#     for meal in meals_qs:
-#         if meal.food.id not in seen_foods:
-#             meals.append(meal)
-#             seen_foods.add(meal.food.id)
-#     return render(request, 'meals_list.html', {'meals': meals})
-
-
-
 @login_required
 def meal_create(request):
     if request.method == 'POST':
@@ -153,31 +132,6 @@ def meal_create(request):
     else:
         form = MealForm()
     return render(request, 'meal_form.html', {'form': form, 'title': 'Add Meal'})
-
-
-# @login_required
-# def meal_delete(request, pk):
-#     meal = get_object_or_404(MealEntry, pk=pk, user=request.user)
-#     if request.method == 'POST':
-#         meal.delete()
-#         messages.success(request, 'Meal removed.')
-#         return redirect('food_list')
-#     return render(request, 'meal_confirm_delete.html', {'form': None, 'delete_obj': meal, 'title': 'Delete Meal'})
-
-# @login_required
-# def meal_edit(request, meal_id):
-#     meal = get_object_or_404(MealEntry, id=meal_id, user=request.user)  # only the owner can edit
-
-#     if request.method == "POST":
-#         form = MealEntryForm(request.POST, instance=meal)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('meals_list')  # after editing, go back to list
-#     else:
-#         form = MealEntryForm(instance=meal)
-
-#     return render(request, "meal_edit.html", {"form": form, "meal": meal})
-
 
 # for daily Kcal intake
 

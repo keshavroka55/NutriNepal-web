@@ -19,7 +19,7 @@ from django.urls import path,include
 from . import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin-keshav/', admin.site.urls),
     path('', views.home,name='homepage'),
 
     path('tracker/', include('tracker.urls')),
@@ -30,7 +30,4 @@ urlpatterns = [
     # for google login auth
     path("accounts",include("allauth.urls")),
     path('oauth/', include('social_django.urls', namespace='social')),
-
-
-    
 ]

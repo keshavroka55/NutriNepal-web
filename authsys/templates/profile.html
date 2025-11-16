@@ -1,79 +1,200 @@
-{% extends 'base.html' %}
-{% block content %}
-<style>
-  .profile-card {
-    max-width: 700px;
-    margin: 40px auto;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-    background: #fff;
-  }
-
-  .profile-header {
-    background: linear-gradient(135deg, #007BFF, #00C6FF);
-    color: #fff;
-    text-align: center;
-    padding: 30px 20px;
-  }
-
-  .profile-header h3 {
-    margin: 0;
-    font-weight: 700;
-    font-size: 1.8rem;
-  }
-
-  .profile-body {
-    padding: 25px 35px;
-  }
-
-  .profile-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 12px 0;
-    border-bottom: 1px solid #f0f0f0;
-    font-size: 1rem;
-  }
-
-  .profile-row strong {
-    color: #444;
-  }
-
-  .profile-footer {
-    text-align: center;
-    padding: 20px;
-    background: #f9f9f9;
-  }
-
-  .profile-footer .btn {
-    border-radius: 30px;
-    padding: 8px 20px;
-    font-size: 0.95rem;
-    transition: 0.3s ease;
-  }
-
-  .profile-footer .btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-  }
-</style>
-
-<div class="profile-card">
-  <div class="profile-header">
-    <h3>My Profile</h3>
+{% extends 'base.html' %} {% load static %} {% block head_extra %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}" />
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+/>
+{% endblock %} {% block content %}
+<div class="profile-container">
+  <div class="profile-header-banner">
+    <h1>My Profile</h1>
+    <p class="subtitle">Manage your health and fitness information</p>
   </div>
-  <div class="profile-body">
-    <div class="profile-row"><strong>Name:</strong> {{ user.username }}</div>
-    <div class="profile-row"><strong>Sex:</strong> {{ user.profile.sex }}</div>
-    <div class="profile-row"><strong>Age:</strong> {{ user.profile.age }}</div>
-    <div class="profile-row"><strong>Weight:</strong> {{ user.profile.weight_kg }} kg</div>
-    <div class="profile-row"><strong>Height:</strong> {{ user.profile.height_cm }} cm</div>
-    <div class="profile-row"><strong>Goal:</strong> {{ user.profile.goal }}</div>
-  </div>
-  <div class="profile-footer">
-    <a href="{% url 'dashboard' %}" class="btn btn-outline-primary me-2">Go to Dashboard</a>
-    <a href="{% url 'weight_history' %}" class="btn btn-info">View Weight Reflection</a>
-    <a href="{% url 'profile_edit' %}" class="btn btn-primary">Edit Profile</a>
+
+  <div class="profile-content">
+    <div class="profile-main-card">
+      <div class="profile-avatar-section">
+        <div class="avatar-circle">
+          <i class="fa fa-user"></i>
+        </div>
+        <div class="user-info">
+          <h2>{{ user.username }}</h2>
+          <p class="user-role">Nutrition Tracker</p>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div
+            class="stat-icon"
+            style="
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            "
+          >
+            <i class="fa fa-venus-mars"></i>
+          </div>
+          <div class="stat-content">
+            <span class="stat-label">Sex</span>
+            <span class="stat-value">{{ user.profile.sex }}</span>
+          </div>
+        </div>
+
+        <div class="stat-item">
+          <div
+            class="stat-icon"
+            style="
+              background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            "
+          >
+            <i class="fa fa-calendar"></i>
+          </div>
+          <div class="stat-content">
+            <span class="stat-label">Age</span>
+            <span class="stat-value">{{ user.profile.age }} years</span>
+          </div>
+        </div>
+
+        <div class="stat-item">
+          <div
+            class="stat-icon"
+            style="
+              background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            "
+          >
+            <i class="fa fa-weight-scale"></i>
+          </div>
+          <div class="stat-content">
+            <span class="stat-label">Weight</span>
+            <span class="stat-value">{{ user.profile.weight_kg }} kg</span>
+          </div>
+        </div>
+
+        <div class="stat-item">
+          <div
+            class="stat-icon"
+            style="
+              background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            "
+          >
+            <i class="fa fa-ruler-vertical"></i>
+          </div>
+          <div class="stat-content">
+            <span class="stat-label">Height</span>
+            <span class="stat-value">{{ user.profile.height_cm }} cm</span>
+          </div>
+        </div>
+
+        <div class="stat-item stat-item-full">
+          <div
+            class="stat-icon"
+            style="
+              background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            "
+          >
+            <i class="fa fa-bullseye"></i>
+          </div>
+          <div class="stat-content">
+            <span class="stat-label">Fitness Goal</span>
+            <span class="stat-value">{{ user.profile.goal }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="bmi-section">
+        <div class="bmi-card">
+          <div class="bmi-header">
+            <h3>Body Mass Index (BMI)</h3>
+            <i class="fa fa-chart-line"></i>
+          </div>
+          <div class="bmi-content">
+            <div class="bmi-value">
+              {% widthratio user.profile.weight_kg 1 10000 as weight_scaled %}
+              {% widthratio user.profile.height_cm 1 1 as height_in_cm %} {%
+              widthratio height_in_cm 1 height_in_cm as height_squared %} {%
+              widthratio weight_scaled 1 height_squared as bmi_scaled %} {%
+              widthratio bmi_scaled 100 1 as bmi %}
+              <span class="bmi-number">{{ bmi|floatformat:1 }}</span>
+            </div>
+            <div class="bmi-indicator">
+              {% if bmi < 18.5 %}
+              <span class="bmi-status underweight">Underweight</span>
+              {% elif bmi < 25 %}
+              <span class="bmi-status normal">Normal Weight</span>
+              {% elif bmi < 30 %}
+              <span class="bmi-status overweight">Overweight</span>
+              {% else %}
+              <span class="bmi-status obese">Obese</span>
+              {% endif %}
+            </div>
+          </div>
+          <div class="bmi-bar">
+            <div
+              class="bmi-marker"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-actions-card">
+      <div class="quick-actions">
+        <h3>Quick Actions</h3>
+
+        <a href="{% url 'dashboard' %}" class="action-btn action-primary">
+          <i class="fa fa-chart-line"></i>
+          <div class="action-text">
+            <span class="action-title">Dashboard</span>
+            <span class="action-desc">View your daily progress</span>
+          </div>
+          <i class="fa fa-chevron-right"></i>
+        </a>
+
+        <a href="{% url 'weight_history' %}" class="action-btn action-info">
+          <i class="fa fa-chart-area"></i>
+          <div class="action-text">
+            <span class="action-title">Weight History</span>
+            <span class="action-desc">Track your weight changes</span>
+          </div>
+          <i class="fa fa-chevron-right"></i>
+        </a>
+
+        <a href="{% url 'profile_edit' %}" class="action-btn action-success">
+          <i class="fa fa-edit"></i>
+          <div class="action-text">
+            <span class="action-title">Edit Profile</span>
+            <span class="action-desc">Update your information</span>
+          </div>
+          <i class="fa fa-chevron-right"></i>
+        </a>
+
+        <a href="{% url 'foods_list' %}" class="action-btn action-secondary">
+          <i class="fa fa-utensils"></i>
+          <div class="action-text">
+            <span class="action-title">Food Database</span>
+            <span class="action-desc">Browse available foods</span>
+          </div>
+          <i class="fa fa-chevron-right"></i>
+        </a>
+      </div>
+
+      <div class="profile-tips">
+        <h3>💡 Health Tips</h3>
+        <div class="tip-item">
+          <i class="fa fa-droplet"></i>
+          <span>Drink 8 glasses of water daily</span>
+        </div>
+        <div class="tip-item">
+          <i class="fa fa-moon"></i>
+          <span>Get 7-9 hours of sleep</span>
+        </div>
+        <div class="tip-item">
+          <i class="fa fa-person-walking"></i>
+          <span>Walk 10,000 steps per day</span>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}

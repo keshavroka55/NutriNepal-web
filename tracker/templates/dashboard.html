@@ -1,200 +1,216 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock %}
 
 {% block content %}
-<div class="dashboard-container">
-    <div class="header">
-        <h2>📊 Dashboard — {{ date }}</h2>
-        <p class="subtitle">Track your daily nutrition & calories</p>
-    </div>
+<div class="dashboard-wrap">
+  <main class="main" id="mainContent">
+    
+    <header class="main-header">
+      <div class="title-block">
+        <div>
+          <h1>📊 Dashboard — {{ date }}</h1>
+          <p class="subtitle">Track your daily nutrition & reach your goals</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a href="#" class="icon-btn">
+          <i class="fa fa-bell"></i>
+        </a>
+        <a href="{% url 'userprofile' %}" class="icon-btn">
+          <i class="fa fa-user-circle"></i>
+        </a>
+      </div>
+    </header>
 
-    <!-- Summary Cards -->
-    <div class="cards">
-        <div class="card">
-            <h4>Daily Goal</h4>
-            <p>{{ target_kcal }} kcal</p>
+    <section class="summary-row">
+      <div class="stat-card">
+        <div class="stat-label">Daily Goal</div>
+        <div class="stat-value">
+          {{ target_kcal|default:"0" }} 
+          <span class="unit">kcal</span>
         </div>
-        <div class="card">
-            <h4>Total Eaten</h4>
-            <p>{{ total_kcal }} kcal</p>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-label">Total Eaten</div>
+        <div class="stat-value">
+          {{ total_kcal|default:"0" }} 
+          <span class="unit">kcal</span>
         </div>
-        <div class="card">
-            <h4>Remaining</h4>
-            <p>{{ remaining_kcal }} kcal</p>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-label">Remaining</div>
+        <div class="stat-value">
+          {{ remaining_kcal|default:"0" }} 
+          <span class="unit">kcal</span>
         </div>
-    </div>
+      </div>
+    </section>
 
-    <!-- Macro Breakdown -->
-    <div class="chart-section">
-        <h3>Macronutrient Breakdown</h3>
-        <canvas id="macroChart"></canvas>
+    <div class="content-grid">
+      
+      <section class="chart-card">
+        <h2 class="section-title">Macronutrient Breakdown</h2>
+        
+        <div class="chart-container">
+          <canvas id="macroChart"></canvas>
+        </div>
+
         <div class="macro-values">
-            <p><strong>Protein:</strong> {{ total_protein }} g</p>
-            <p><strong>Fat:</strong> {{ total_fat }} g</p>
-            <p><strong>Carbs:</strong> {{ total_carbs }} g</p>
+          <div class="macro-item">
+            <strong>💪 Protein</strong>
+            <span class="macro-number">{{ total_protein|default:"0" }} g</span>
+          </div>
+          <div class="macro-item">
+            <strong>🥑 Fat</strong>
+            <span class="macro-number">{{ total_fat|default:"0" }} g</span>
+          </div>
+          <div class="macro-item">
+            <strong>🌾 Carbs</strong>
+            <span class="macro-number">{{ total_carbs|default:"0" }} g</span>
+          </div>
         </div>
-    </div>
+      </section>
 
-    <!-- Meal Entries -->
-    <div class="entries-section">
-        <h3>🍽 Today’s Meals</h3>
+      <section class="meals-card">
+        <div class="meals-header">
+          <h2 class="section-title">🍽️ Today's Meals</h2>
+        </div>
+
         {% if entries %}
-        <table class="styled-table">
+        <div class="table-wrap">
+          <table class="meals-table">
             <thead>
-                <tr>
-                    <th>Food</th>
-                    <th>Calories (kcal)</th>
-                    <th>Protein (g)</th>
-                    <th>Fat (g)</th>
-                    <th>Carbs (g)</th>
-                </tr>
+              <tr>
+                <th>Food</th>
+                <th>Calories</th>
+                <th>Protein</th>
+                <th>Fat</th>
+                <th>Carbs</th>
+              </tr>
             </thead>
             <tbody>
-                {% for entry in entries %}
-                <tr>
-                    <td>{{ entry.food.name }}</td>
-                    <td>{{ entry.kcal }}</td>
-                    <td>{{ entry.protein_g }}</td>
-                    <td>{{ entry.fat_g }}</td>
-                    <td>{{ entry.carbs_g }}</td>
-                </tr>
-                {% endfor %}
+              {% for entry in entries %}
+              <tr>
+                <td>{{ entry.food.name }}</td>
+                <td>{{ entry.kcal }} kcal</td>
+                <td>{{ entry.protein_g }} g</td>
+                <td>{{ entry.fat_g }} g</td>
+                <td>{{ entry.carbs_g }} g</td>
+              </tr>
+              {% endfor %}
             </tbody>
-        </table>
+          </table>
+        </div>
         {% else %}
-        <p class="empty-msg">No meals added for today yet.</p>
+        <div class="empty-state">
+          <p class="empty-msg">No meals added for today yet. Start tracking your nutrition!</p>
+        </div>
         {% endif %}
+
+        <div class="action-row">
+          <a href="{% url 'meal_create' %}" class="btn btn-primary">
+            ➕ Add Meal
+          </a>
+          <a href="{% url 'food_create' %}" class="btn btn-secondary">
+            🍎 Create Food
+          </a>
+          <a href="{% url 'foods_list' %}" class="btn btn-ghost">
+            📚 Food List
+          </a>
+        </div>
+      </section>
+
     </div>
 
-    <!-- Buttons -->
-    <div class="actions">
-        <a href="{% url 'meal_create' %}" class="btn primary">➕ Add Today Eaten Food</a>
-        <a href="{% url 'food_create' %}" class="btn primary">➕ Create Your Favourite Food</a>
-        <a href="{% url 'foods_list' %}" class="btn secondary">📚 View Foods List</a>
-    </div>
+  </main>
+
 </div>
 
-<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    const ctx = document.getElementById('macroChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels: ['Protein (g)', 'Fat (g)', 'Carbs (g)'],
-            datasets: [{
-                data: [{{ total_protein }}, {{ total_fat }}, {{ total_carbs }}],
-                backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56'],
-                hoverOffset: 12
-            }]
+(function () {
+  const ctx = document.getElementById('macroChart');
+  if (!ctx) return;
+
+  const proteinValue = Number("{{ total_protein|default:0 }}");
+  const fatValue = Number("{{ total_fat|default:0 }}");
+  const carbsValue = Number("{{ total_carbs|default:0 }}");
+  
+  const hasData = proteinValue > 0 || fatValue > 0 || carbsValue > 0;
+  const displayData = hasData ? [proteinValue, fatValue, carbsValue] : [30, 20, 50];
+
+  new Chart(ctx.getContext('2d'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Protein', 'Fat', 'Carbs'],
+      datasets: [{
+        data: displayData,
+        backgroundColor: [
+          'rgba(99, 102, 241, 0.8)',
+          'rgba(236, 72, 153, 0.8)',
+          'rgba(245, 158, 11, 0.8)'
+        ],
+        borderColor: [
+          'rgba(99, 102, 241, 1)',
+          'rgba(236, 72, 153, 1)',
+          'rgba(245, 158, 11, 1)'
+        ],
+        borderWidth: 2,
+        hoverOffset: 10
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            padding: 15,
+            font: {
+              size: 13,
+              family: "'Inter', sans-serif",
+              weight: '600'
+            },
+            usePointStyle: true,
+            pointStyle: 'circle'
+          }
         },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: { font: { size: 14 } }
-                }
+        tooltip: {
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          padding: 12,
+          titleFont: { size: 14, weight: '600' },
+          bodyFont: { size: 13 },
+          borderColor: 'rgba(255, 255, 255, 0.1)',
+          borderWidth: 1,
+          callbacks: {
+            label: function(context) {
+              const label = context.label || '';
+              const value = context.parsed || 0;
+              const suffix = hasData ? 'g' : 'g (sample)';
+              return label + ': ' + value + suffix;
             }
+          }
         }
-    });
+      },
+      cutout: '60%'
+    }
+  });
+
+  if (!hasData) {
+    const centerText = document.createElement('div');
+    centerText.className = 'chart-center-text';
+    centerText.innerHTML = '<strong>No data yet</strong><br><small>Add meals to see your macros</small>';
+    ctx.parentElement.appendChild(centerText);
+  }
+})();
 </script>
 
-<!-- CSS -->
-<style>
-.dashboard-container {
-    max-width: 1000px;
-    margin: auto;
-    padding: 20px;
-    font-family: "Segoe UI", sans-serif;
-}
-.header {
-    text-align: center;
-    margin-bottom: 20px;
-}
-.header h2 {
-    font-size: 28px;
-    margin: 0;
-}
-.subtitle {
-    color: #666;
-}
-.cards {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 30px;
-    gap: 20px;
-}
-.card {
-    flex: 1;
-    padding: 15px;
-    background: #f8f9fa;
-    border-radius: 12px;
-    text-align: center;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-.card h4 {
-    margin-bottom: 8px;
-    color: #444;
-}
-.chart-section {
-    text-align: center;
-    margin-bottom: 40px;
-}
-#macroChart {
-    max-width: 400px;
-    margin: 20px auto;
-}
-.entries-section {
-    margin-bottom: 30px;
-}
-.styled-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-    border-radius: 8px;
-    overflow: hidden;
-}
-.styled-table th, .styled-table td {
-    padding: 12px;
-    text-align: center;
-}
-.styled-table thead {
-    background-color: #36A2EB;
-    color: white;
-}
-.styled-table tbody tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
-.empty-msg {
-    text-align: center;
-    color: #777;
-}
-.actions {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 20px;
-}
-.btn {
-    text-decoration: none;
-    padding: 10px 18px;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: 0.3s;
-}
-.btn.primary {
-    background: #36A2EB;
-    color: white;
-}
-.btn.primary:hover {
-    background: #1f77d0;
-}
-.btn.secondary {
-    background: #eee;
-    color: #333;
-}
-.btn.secondary:hover {
-    background: #ddd;
-}
-</style>
 {% endblock %}
