@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="{% static 'css/food_list2.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="food-list-page">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="page-icon">🍛</div>
+                    <div>
+                        <h1 class="page-title">Food Database</h1>
+                        <p class="page-subtitle">Browse and manage Nepali foods with complete nutritional information</p>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <a href="{% url 'food_create' %}" class="btn-add-food">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Add New Food
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-info">
+                        <div class="stat-value">{{ foods|length }}</div>
+                        <div class="stat-label">Total Foods</div>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon">🌾</div>
+                    <div class="stat-info">
+                        <div class="stat-value">{{ foods|length }}</div>
+                        <div class="stat-label">Available Items</div>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon">👤</div>
+                    <div class="stat-info">
+                        <div class="stat-value">
+                            {% with user_foods=foods|length %}
+                                {{ user_foods }}
+                            {% endwith %}
+                        </div>
+                        <div class="stat-label">In Database</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Food Table -->
+    <div class="container">
+        <div class="table-container">
+            <div class="table-header">
+                <div class="table-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    <span>All Foods & Dishes</span>
+                </div>
+                <div class="table-actions">
+                    <div class="search-box">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                        <input type="text" id="searchInput" placeholder="Search foods..." class="search-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="food-table" id="foodTable">
+                    <thead>
+                        <tr>
+                            <th>
+                                <div class="th-content">
+                                    <span>Name</span>
+                                    <svg class="sort-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="th-content">
+                                    <span>Serving</span>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="th-content">
+                                    <span>Calories</span>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="th-content">
+                                    <span>Protein</span>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="th-content">
+                                    <span>Fat</span>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="th-content">
+                                    <span>Carbs</span>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="th-content">
+                                    <span>Creator</span>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="th-content">
+                                    <span>Actions</span>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for food in foods %}
+                        <tr class="food-row">
+                            <td>
+                                <div class="food-name">
+                                    <div class="food-emoji">🍽️</div>
+                                    <span class="name-text">{{ food.name }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="serving-badge">{{ food.serving_size_g }}g</span>
+                            </td>
+                            <td>
+                                <div class="nutrient-cell">
+                                    <span class="nutrient-value">{{ food.kcal }}</span>
+                                    <span class="nutrient-unit">kcal</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="nutrient-cell">
+                                    <span class="nutrient-value">{{ food.protein_g }}</span>
+                                    <span class="nutrient-unit">g</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="nutrient-cell">
+                                    <span class="nutrient-value">{{ food.fat_g }}</span>
+                                    <span class="nutrient-unit">g</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="nutrient-cell">
+                                    <span class="nutrient-value">{{ food.carbs_g }}</span>
+                                    <span class="nutrient-unit">g</span>
+                                </div>
+                            </td>
+                            <td>
+                                {% if food.creator %}
+                                    {% if food.creator.is_superuser %}
+                                        <span class="creator-badge admin">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                                                <path d="M2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                                            </svg>
+                                            {{ food.creator.username }}-admin
+                                        </span>
+                                    {% else %}
+                                        <span class="creator-badge user">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                                <circle cx="12" cy="7" r="4"></circle>
+                                            </svg>
+                                            {{ food.creator.username }}
+                                        </span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="creator-badge system">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                                            <line x1="8" y1="21" x2="16" y2="21"></line>
+                                            <line x1="12" y1="17" x2="12" y2="21"></line>
+                                        </svg>
+                                        System
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    {% if user.is_superuser or food.creator == user %}
+                                        <a href="{% url 'food_update' food.pk %}" class="btn-action btn-edit" title="Edit">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                            </svg>
+                                        </a>
+                                        <a href="{% url 'food_delete' food.pk %}" class="btn-action btn-delete" title="Delete" onclick="return confirm('Are you sure you want to delete {{ food.name }}?')">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <polyline points="3 6 5 6 21 6"></polyline>
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                                            </svg>
+                                        </a>
+                                    {% else %}
+                                        <span class="no-actions">—</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="empty-state">
+                                <div class="empty-content">
+                                    <div class="empty-icon">🔍</div>
+                                    <h3>No foods found</h3>
+                                    <p>Start by adding your first food item to the database</p>
+                                    <a href="{% url 'food_create' %}" class="btn-empty">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                                        </svg>
+                                        Add Your First Food
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Search functionality
+document.getElementById('searchInput').addEventListener('keyup', function() {
+    const searchValue = this.value.toLowerCase();
+    const rows = document.querySelectorAll('.food-row');
+    
+    rows.forEach(row => {
+        const foodName = row.querySelector('.name-text').textContent.toLowerCase();
+        const creator = row.querySelector('.creator-badge').textContent.toLowerCase();
+        
+        if (foodName.includes(searchValue) || creator.includes(searchValue)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+});
+</script>
+{% endblock %}

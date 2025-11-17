@@ -16,13 +16,13 @@
   <div class="login-card">
     <form method="POST" class="login-form">
       {% csrf_token %}
-      
+
       {% if form.non_field_errors %}
-        <ul class="errorlist">
-          {% for error in form.non_field_errors %}
-            <li>{{ error }}</li>
-          {% endfor %}
-        </ul>
+      <ul class="errorlist">
+        {% for error in form.non_field_errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
       {% endif %}
 
       <div class="form-group">
@@ -36,7 +36,7 @@
       <button type="submit" class="btn primary full-width">Log In</button>
 
       <!-- Google Login -->
-      <a href="{% url 'social:begin' 'google-oauth2' %}?next=/success/" class="btn google full-width">
+      <a href="/accounts/google/login/?process=login&next={% url 'dashboard' %}" class="btn google full-width">
         <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo" width="20" height="20">
         Continue with Google
       </a>
@@ -54,55 +54,63 @@
 
 <!-- CSS -->
 <style>
-.login-wrapper {
+  .login-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 40px 20px;
     font-family: "Segoe UI", sans-serif;
-}
-.login-branding {
+  }
+
+  .login-branding {
     text-align: center;
     margin-bottom: 30px;
     max-width: 500px;
-}
-.brand-title {
+  }
+
+  .brand-title {
     color: #007BFF;
     font-size: 2.5rem;
     font-weight: 700;
     margin: 0;
-}
-.brand-subtitle {
+  }
+
+  .brand-subtitle {
     font-size: 1rem;
     color: #444;
     margin-top: 10px;
     font-style: italic;
-}
-.login-card {
+  }
+
+  .login-card {
     width: 100%;
     max-width: 420px;
     padding: 30px;
     background: #f9f9f9;
     border-radius: 14px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.1);
-}
-.login-form .form-group {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  }
+
+  .login-form .form-group {
     margin-bottom: 15px;
-}
-.form-control {
+  }
+
+  .form-control {
     width: 100%;
     padding: 12px;
     border: 1px solid #ddd;
     border-radius: 8px;
     font-size: 14px;
     transition: border 0.3s, box-shadow 0.3s;
-}
-.form-control:focus {
+  }
+
+  .form-control:focus {
     border-color: #007BFF;
-    box-shadow: 0 0 6px rgba(0,123,255,0.3);
+    box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
     outline: none;
-}
-.btn {
+  }
+
+  .btn {
     display: inline-flex;
     justify-content: center;
     align-items: center;
@@ -113,59 +121,71 @@
     padding: 10px 16px;
     transition: background 0.3s, transform 0.2s;
     cursor: pointer;
-}
-.btn.full-width {
+  }
+
+  .btn.full-width {
     width: 100%;
     margin-top: 10px;
-}
-.btn.primary {
+  }
+
+  .btn.primary {
     background: #007BFF;
     color: #fff;
     border: none;
-}
-.btn.primary:hover {
+  }
+
+  .btn.primary:hover {
     background: #0056b3;
-}
-.btn.secondary {
+  }
+
+  .btn.secondary {
     background: #eee;
     color: #333;
-}
-.btn.secondary:hover {
+  }
+
+  .btn.secondary:hover {
     background: #ddd;
-}
-.btn.google {
+  }
+
+  .btn.google {
     background: #fff;
     color: #444;
     border: 1px solid #ccc;
     font-weight: 500;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-}
-.btn.google:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  }
+
+  .btn.google:hover {
     background: #f7f7f7;
-}
-.forgot-password {
+  }
+
+  .forgot-password {
     margin-top: 12px;
     text-align: right;
-}
-.forgot-password a {
+  }
+
+  .forgot-password a {
     font-size: 13px;
     color: #007BFF;
     text-decoration: none;
-}
-.forgot-password a:hover {
+  }
+
+  .forgot-password a:hover {
     text-decoration: underline;
-}
-hr {
+  }
+
+  hr {
     border: none;
     border-top: 1px solid #ddd;
     margin: 20px 0;
-}
-.errorlist {
+  }
+
+  .errorlist {
     list-style: none;
     padding: 0;
     margin-bottom: 15px;
     color: red;
     font-size: 14px;
-}
+  }
 </style>
 {% endblock %}

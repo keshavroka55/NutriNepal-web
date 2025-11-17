@@ -68,7 +68,7 @@ def foods_list(request):
         foods = Food.objects.filter(Q(creator__is_superuser=True)).order_by('-created_at')
     else:
         foods = Food.objects.filter(Q(creator__is_superuser=True) | Q(creator=request.user)).order_by('-created_at')
-    return render(request, 'FoodCURD/foods_list.html', {'foods': foods})
+    return render(request, 'FoodCURD/food_list2.html', {'foods': foods})
 
 @login_required
 def food_create(request):
@@ -151,7 +151,7 @@ def daily_kcal_summary(request):
             total_fat=Sum(F('food__fat_g') * F('servings'), output_field=FloatField()),
             total_carbs=Sum(F('food__carbs_g') * F('servings'), output_field=FloatField()),
         )
-        .order_by('date')  # <-- ascending: oldest first, newest last
+        .order_by('-date')  # <-- ascending: oldest first, newest last
     )
 
     # convert to list of simple dicts with ISO date strings and float values

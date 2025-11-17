@@ -9,5 +9,4 @@ urlpatterns = [
     path('profileedit/', views.profile_edit, name='profile_edit'),
     path('logout/', views.logout_view, name='logout'),
     
-    
-]
+    ]

@@ -12,10 +12,15 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / '.env')
+
+SOCIAL_AUTH_GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
+SOCIAL_AUTH_GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
+ALLOWED_HOSTS = ["*"]
 
 
 # Quick-start development settings - unsuitable for production
@@ -27,7 +32,7 @@ SECRET_KEY = 'django-insecure-^2!jade@+80f_ztg(z__8$4&t!e4z4kw)w+mc0eg!+k@)ykty6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+
 
 
 # Application definition
@@ -80,22 +85,42 @@ SOCIALACCOUNT_PROVIDERS = {
             'profile',
             'email',
         ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
+
         },
-        'OAUTH_PKCE_ENABLED': True,
     }
-}
 
 
 # Django allauth config
 SITE_ID = 1
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+# email verication page is loading while 'compulsotry" 
+ACCOUNT_EMAIL_VERIFICATION = 'none'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 
 ROOT_URLCONF = 'kcalapi.urls'
 CORS_ALLOW_ALL_ORIGINS = True
+# to skip the continue with google 
+SOCIALACCOUNT_AUTO_SIGNUP = False
+
+ACCOUNT_EMAIL_REQUIRED = False
+
+
+# by the error of: showing 3rd party signup -one
+ACCOUNT_USERNAME_REQUIRED = False
+
+
+
+
+
+LOGIN_REDIRECT_URL = '/tracker/dashboard/'
+
+
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+# this is for the sign up page show some and css is not loading problem man. 
+SOCIALACCOUNT_LOGIN_ON_GET = True
+
 
 TEMPLATES = [
     {
@@ -184,8 +209,6 @@ STATICFILES_DIRS = [
 
 ]
 LOGIN_URL = 'login' 
-LOGIN_REDIRECT_URL = 'dashboard'
-LOGOUT_REDIRECT_URL = 'login'
 
 
 # Default primary key field type
