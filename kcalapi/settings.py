@@ -14,7 +14,6 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 load_dotenv()
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / '.env')
 
@@ -77,21 +76,25 @@ MIDDLEWARE = [
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
+    "allauth.account.auth_backends.AuthenticationBackend", 
 )
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
-        'SCOPE': [
-            'profile',
-            'email',
-        ],
+        'SCOPE': ['profile','email',"openid"],
+        "AUTH_PARAMS":{"access_type":"online"},
 
         },
     }
 
+# allauth sometimes asks for username so solution is creating a adaptors.py file.
+SOCIALACCOUNT_ADAPTER = "kcalapi.adapters.CustomSocialAccountAdapter"
+
+
+
 
 # Django allauth config
-SITE_ID = 1
+SITE_ID = 3
 # email verication page is loading while 'compulsotry" 
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 ACCOUNT_EMAIL_REQUIRED = True
@@ -100,26 +103,20 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ROOT_URLCONF = 'kcalapi.urls'
 CORS_ALLOW_ALL_ORIGINS = True
 # to skip the continue with google 
-SOCIALACCOUNT_AUTO_SIGNUP = False
-
-ACCOUNT_EMAIL_REQUIRED = False
-
-
-# by the error of: showing 3rd party signup -one
+SOCIALACCOUNT_AUTO_SIGNUP = True
 ACCOUNT_USERNAME_REQUIRED = False
-
-
-
-
-
-LOGIN_REDIRECT_URL = '/tracker/dashboard/'
-
-
-ACCOUNT_LOGOUT_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
 
 # this is for the sign up page show some and css is not loading problem man. 
 SOCIALACCOUNT_LOGIN_ON_GET = True
+
+
+
+
+
+# redirect URLs. 
+LOGIN_REDIRECT_URL = '/tracker/dashboard/'
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 
 TEMPLATES = [
